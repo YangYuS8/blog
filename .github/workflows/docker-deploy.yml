@@ -3,9 +3,13 @@ name: Build & Deploy (Docker)
 on:
   push:
     branches: [ main ]
-    # 仅当 Hexo 内容 (source) 发生变动时自动触发；其它配置或构建文件变动可使用手动 workflow_dispatch
+    # 触发条件：文章内容 或 构建相关配置/脚本 发生变动
     paths:
       - 'source/**'
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'docker/**'
+      - '.github/workflows/docker-deploy.yml'
   workflow_dispatch:
 
 jobs:
@@ -17,6 +21,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug build context (list key files)
+        run: |
+          echo "Commit: $(git rev-parse HEAD)"
+          echo "== .dockerignore =="; cat .dockerignore || true
+          echo "== docker dir =="; ls -al docker || true
+          echo "== Dockerfile snippet =="; grep -n 'nginx.conf' Dockerfile || true
+          if [ ! -f docker/nginx.conf ]; then
+            echo 'FATAL: docker/nginx.conf 不存在于构建上下文'; exit 1; fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
