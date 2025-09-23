@@ -11,13 +11,19 @@ RUN pnpm install --frozen-lockfile=false
 
 COPY . .
 
-# Build static site
-RUN npx hexo generate
+# 可通过构建参数传入 Git 短哈希
+ARG GIT_COMMIT=unknown
+ENV GIT_COMMIT_SHA=$GIT_COMMIT
+
+# 将 commit 信息写入局部片段（短哈希），供主题 footer 引用
+RUN SHORT_SHA=$(printf "%s" "$GIT_COMMIT_SHA" | cut -c1-7); \
+    echo "<span id=\"build-revision\">Build: ${SHORT_SHA}</span>" > source/_includes/build_revision.ejs; \
+	npx hexo generate
 
 ## Stage 2: Nginx minimal image serving static files
 FROM nginx:1.27-alpine AS runtime
-LABEL maintainer="you <you@example.com>"
-LABEL org.opencontainers.image.source="https://github.com/yourname/yourrepo"
+LABEL maintainer="YangYuS8 <noreply@users.noreply.github.com>"
+LABEL org.opencontainers.image.source="https://github.com/YangYuS8/blog"
 
 ## Copy custom nginx config
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

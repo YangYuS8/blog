@@ -3,6 +3,9 @@ name: Build & Deploy (Docker)
 on:
   push:
     branches: [ main ]
+    # 仅当 Hexo 内容 (source) 发生变动时自动触发；其它配置或构建文件变动可使用手动 workflow_dispatch
+    paths:
+      - 'source/**'
   workflow_dispatch:
 
 jobs:
@@ -33,35 +36,21 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository_owner }}/hexo-blog
+          labels: |
+            org.opencontainers.image.revision=${{ github.sha }}
 
-      - name: Build and push
+      - name: Build and push (multi-arch)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
 
-  deploy-server:
-    runs-on: ubuntu-latest
-    needs: build-image
-    if: ${{ success() }} # 若需按条件控制，可改为: github.ref == 'refs/heads/main'
-    steps:
-      - name: Deploy over SSH (pull & recreate)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}        # 在仓库 Settings -> Secrets 添加
-          username: ${{ secrets.SSH_USER }}    # 如: root
-          key: ${{ secrets.SSH_KEY }}          # 私钥内容
-          # port: ${{ secrets.SSH_PORT }}      # 可选，若不设置使用 22
-          script: |
-            set -e
-            IMAGE=ghcr.io/${{ github.repository_owner }}/hexo-blog:latest
-            DEPLOY_PATH=${DEPLOY_PATH:-/opt/hexo}
-            mkdir -p "$DEPLOY_PATH"
-            cd "$DEPLOY_PATH"
-            docker pull $IMAGE
-            docker compose up -d --remove-orphans blog
-            docker image prune -f
+  # 已改为服务器侧 watchtower / 手动拉取更新，取消直接 SSH 部署 Job

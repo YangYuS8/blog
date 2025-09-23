@@ -1,3 +1,4 @@
+/.env
 .DS_Store
 Thumbs.db
 db.json
@@ -6,3 +7,4 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+backups/

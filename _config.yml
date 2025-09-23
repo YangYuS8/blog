@@ -193,7 +193,8 @@ symbols_count_time:
 # Waline 评论（需要在 Fluid 中开启自定义注入或其内置评论扩展）
 waline:
   enable: true
-  serverURL: https://your-waline.vercel.app
+  # 使用反向代理子路径 /comment/ ，确保上游或容器内 nginx 已代理到 waline 服务
+  serverURL: https://blog.yangyus8.top/comment/
   comment: true
   pageview: true
   locale:

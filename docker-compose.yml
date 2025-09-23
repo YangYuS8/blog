@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   blog:
-    image: ghcr.io/yourname/hexo-blog:latest  # CI 构建推送后的镜像（替换 yourname）
+    image: ghcr.io/yangyus8/hexo-blog:latest  # CI 构建推送后的镜像
     container_name: hexo-blog
     restart: unless-stopped
     ports:
@@ -9,18 +9,18 @@ services:
     depends_on:
       - waline
     environment:
-      # 可选：将评论前端使用的 Waline 地址注入静态页（若使用同域反代 /comment 则不需要）
-      WALINE_SERVER_URL: https://blog.yangyus8.top/comment/
+      WALINE_SERVER_URL: ${WALINE_PUBLIC_URL:-https://blog.yangyus8.top/comment/}
+    labels:
+      # 仅为 blog 服务开启 watchtower 自动更新，其它服务保持不自动更新
+      - "com.centurylinklabs.watchtower.enable=true"
 
   waline-db:
     image: mariadb:11.4
     container_name: waline-db
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: change_root_now
-      MYSQL_DATABASE: waline
-      MYSQL_USER: waline
-      MYSQL_PASSWORD: change_me_now
       TZ: Asia/Shanghai
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
@@ -32,22 +32,30 @@ services:
     restart: unless-stopped
     depends_on:
       - waline-db
+    env_file:
+      - .env
     environment:
-      SITE_URL: https://blog.yangyus8.top
       TZ: Asia/Shanghai
-      ADMIN_USER: admin
-      ADMIN_PASSWORD: change_me_now
       DISABLE_EMAIL: 'true'
-      # 使用 MariaDB 连接
       MYSQL_HOST: waline-db
       MYSQL_PORT: 3306
-      MYSQL_USER: waline
-      MYSQL_PASSWORD: change_me_now
-      MYSQL_DB: waline
     volumes:
-      - waline_data:/data   # 用于未来可能的文件缓存/上传
+      - waline_data:/data
     expose:
       - "8360"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: 1800   # 每 30 分钟轮询一次
+      WATCHTOWER_LABEL_ENABLE: "true"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
 volumes:
   waline_data:
