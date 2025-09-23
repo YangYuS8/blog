@@ -1,0 +1,10 @@
+node_modules
+public
+.git
+.github
+Dockerfile
+docker-compose.yml
+docker
+*.log
+tmp
+.DS_Store

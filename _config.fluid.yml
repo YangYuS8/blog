@@ -1,0 +1,75 @@
+# Fluid 主题主配置
+# 文档: https://hexo-fluid.github.io/docs/
+
+# 站点导航栏
+navbar:
+  logo:
+    text: 杨与S8
+  menu:
+    - name: 首页
+      link: /
+    - name: 归档
+      link: /archives/
+    - name: 分类
+      link: /categories/
+    - name: 标签
+      link: /tags/
+    - name: 关于
+      link: /about/
+
+# 主页 Banner
+index:
+  banner_img: https://cdn.jsdelivr.net/gh/hexo-fluid/static@master/img/default.png
+  slogan:
+    enable: true
+    text: 记录与分享
+
+# 页脚
+footer:
+  content: '©2025 杨与S8'
+  beian:
+    enable: false
+
+# 代码高亮（使用 hexo-prism-plugin 已预处理）
+code:
+  copy_btn: true
+  highlight:
+    enable: false   # 关闭主题内置高亮，使用 hexo-prism-plugin 生成的 CSS
+
+# 本地搜索
+search:
+  enable: true
+  type: local
+
+# RSS 链接（Feed 插件生成的 atom.xml）
+links:
+  rss: /atom.xml
+
+# 文章设置
+post:
+  meta:
+    date: true
+    category: true
+    tag: true
+    wordcount: true
+    readingtime: true
+  toc:
+    enable: true
+    headingSelector: 'h1,h2,h3'
+    collapse: false
+
+# Prism 主题可自定义（可选）
+prism:
+  light: default
+  dark: okaidia
+
+# 自定义注入（按需）
+custom_js: []
+custom_css: []
+
+# Waline 前端挂载点（在主题 layout 中已有 hooks，可用 injector 或直接在文章末尾 script 初始化——这里仅配置占位说明）
+comment:
+  type: waline
+  js: https://unpkg.com/@waline/client@v3/dist/waline.js
+  css: https://unpkg.com/@waline/client@v3/dist/waline.css
+  placeholder: 发表评论...

@@ -1,0 +1,56 @@
+version: '3.9'
+services:
+  blog:
+    image: ghcr.io/yourname/hexo-blog:latest  # CI 构建推送后的镜像（替换 yourname）
+    container_name: hexo-blog
+    restart: unless-stopped
+    ports:
+      - "80:80"   # 若由上层反向代理再做 80/443，可改成 "127.0.0.1:8080:80"
+    depends_on:
+      - waline
+    environment:
+      # 可选：将评论前端使用的 Waline 地址注入静态页（若使用同域反代 /comment 则不需要）
+      WALINE_SERVER_URL: https://blog.yangyus8.top/comment/
+
+  waline-db:
+    image: mariadb:11.4
+    container_name: waline-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: change_root_now
+      MYSQL_DATABASE: waline
+      MYSQL_USER: waline
+      MYSQL_PASSWORD: change_me_now
+      TZ: Asia/Shanghai
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - waline_mysql:/var/lib/mysql
+
+  waline:
+    image: walinejs/server:latest
+    container_name: waline
+    restart: unless-stopped
+    depends_on:
+      - waline-db
+    environment:
+      SITE_URL: https://blog.yangyus8.top
+      TZ: Asia/Shanghai
+      ADMIN_USER: admin
+      ADMIN_PASSWORD: change_me_now
+      DISABLE_EMAIL: 'true'
+      # 使用 MariaDB 连接
+      MYSQL_HOST: waline-db
+      MYSQL_PORT: 3306
+      MYSQL_USER: waline
+      MYSQL_PASSWORD: change_me_now
+      MYSQL_DB: waline
+    volumes:
+      - waline_data:/data   # 用于未来可能的文件缓存/上传
+    expose:
+      - "8360"
+
+volumes:
+  waline_data:
+  waline_mysql:
+
+# 生产环境建议用 Caddy / Nginx 在宿主机做 80/443 入口 + 证书管理

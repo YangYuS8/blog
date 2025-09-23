@@ -14,7 +14,8 @@ timezone: ''
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
 url: https://blog.yangyus8.top
-permalink: :year/:month/:day/:title/
+# 原默认 permalink 已由下方 abbrlink 规则覆盖
+# permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
   trailing_index: true # Set to false to remove trailing 'index.html' from permalinks
@@ -43,17 +44,6 @@ render_drafts: false
 post_asset_folder: false
 relative_link: false
 future: true
-syntax_highlighter: highlight.js
-highlight:
-  line_number: true
-  auto_detect: false
-  tab_replace: ''
-  wrap: true
-  hljs: false
-prismjs:
-  preprocess: true
-  line_number: true
-  tab_replace: ''
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
@@ -96,9 +86,119 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: fluid
+
+# Feed (RSS/Atom)
+feed:
+  type: atom
+  path: atom.xml
+  limit: 0
+  hub:
+  content: true
+  content_limit: 140
+  order_by: -date
+
+# Sitemap
+sitemap:
+  path: sitemap.xml
+  rel: true
+  tags: true
+  categories: true
+
+# Abbrlink (short & stable permalink hash)
+abbrlink:
+  alg: crc32  # or crc16 / md5
+  rep: hex    # dec / hex
+  drafts: false
+  # force: true # enable if need regenerate
+
+# Override permalink to use abbrlink (keep date folders optional)
+permalink: post/:abbrlink/
+
+# Local search database
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: html
+
+# Prism.js highlighting plugin (disable default highlight.js)
+syntax_highlighter: prismjs
+highlight:
+  enable: false
+prismjs:
+  preprocess: true
+  line_number: true
+  tab_replace: ''
+  # theme: default # can be set in theme config
+
+# hexo-prism-plugin 配置
+prism_plugin:
+  mode: 'preprocess'   # 可选 realtime
+  theme: 'default'
+  line_number: true
+  custom_css: ''
+  copy:
+    enable: true
+    button_text: '复制'
+    success_text: '已复制!'
+
+# Markdown-it renderer settings
+markdown:
+  preset: default
+  render:
+    html: true
+    xhtmlOut: false
+    breaks: false
+    linkify: true
+    typographer: true
+  plugins:
+    - markdown-it-emoji
+    - markdown-it-footnote
+    - markdown-it-task-lists
+  anchors:
+    level: 2
+    collisionSuffix: 'v'
+    permalink: true
+    permalinkClass: header-anchor
+    permalinkSymbol: '#'
+
+# hexo-neat html/css/js minify
+neat_enable: true
+neat_html:
+  enable: true
+  exclude: []
+neat_css:
+  enable: true
+  exclude: []
+neat_js:
+  enable: true
+  mangle: false
+  exclude: []
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: ''
+deploy: {}
+
+# Word count & reading time (hexo-symbols-count-time)
+symbols_count_time:
+  symbols: true
+  time: true
+  total_symbols: true
+  total_time: true
+  awl: 2
+  wpm: 300
+  suffix: true
+
+# Waline 评论（需要在 Fluid 中开启自定义注入或其内置评论扩展）
+waline:
+  enable: true
+  serverURL: https://your-waline.vercel.app
+  comment: true
+  pageview: true
+  locale:
+    placeholder: 发表评论...
+  emoji:
+    - https://unpkg.com/@waline/emojis@1.2.0/weibo
+  requiredMeta: ['nick','mail']
+  dark: auto
