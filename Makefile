@@ -71,8 +71,8 @@ remote-up: ## 服务器上拉起/更新 (需: SSH_HOST SSH_USER 已配置 compos
 	ssh $$SSH_USER@$$SSH_HOST 'cd $(DEPLOY_PATH) && $(DOCKER_COMPOSE) pull && $(DOCKER_COMPOSE) up -d --remove-orphans'
 
 .PHONY: update-local
-update-local: ## （本地/内网服务器）拉取最新镜像并重启 (scripts/update.sh)
-	bash scripts/update.sh
+update-local: ## （本地/内网服务器）拉取最新镜像并重启 (ops/update.sh)
+	bash ops/update.sh
 
 .PHONY: watchtower-logs
 watchtower-logs: ## 查看 watchtower 日志 (自动更新监控)
@@ -110,7 +110,7 @@ prune: ## 本地清理无用 Docker 镜像/缓存
 # ================= 数据库备份 =================
 .PHONY: backup-db
 backup-db: ## 备份 Waline 数据库 (本地/服务器同理，可设置 RETAIN=14 BACKUP_DIR=backups)
-	bash scripts/backup-db.sh
+	bash ops/backup-db.sh
 
 # ================= 实用信息 =================
 .PHONY: help

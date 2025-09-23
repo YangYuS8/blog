@@ -17,7 +17,8 @@ ENV GIT_COMMIT_SHA=$GIT_COMMIT
 
 # 将 commit 信息写入局部片段（短哈希），供主题 footer 引用
 RUN SHORT_SHA=$(printf "%s" "$GIT_COMMIT_SHA" | cut -c1-7); \
-    echo "<span id=\"build-revision\">Build: ${SHORT_SHA}</span>" > source/_includes/build_revision.ejs; \
+	mkdir -p source/_includes; \
+	echo "<span id=\"build-revision\">Build: ${SHORT_SHA}</span>" > source/_includes/build_revision.ejs; \
 	npx hexo generate
 
 ## Stage 2: Nginx minimal image serving static files
