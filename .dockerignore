@@ -1,9 +1,11 @@
+### Reduce build context size ###
 node_modules
 public
 .git
 .github
-Dockerfile
 docker-compose.yml
 *.log
 tmp
 .DS_Store
+
+# 保留 Dockerfile 与 docker/ 目录用于构建（之前忽略 docker 导致 COPY 失败）
