@@ -1,223 +1,253 @@
 # 杨与S8的博客站
 
-基于 **Hexo 8 + Fluid 主题**，容器化部署，镜像托管于 GitHub Container Registry (GHCR)。
+<p align="center">
+	<a href="https://blog.yangyus8.top" target="_blank"><img src="https://img.shields.io/badge/Hexo-8.x-brightgreen?logo=hexo" alt="Hexo"></a>
+	<img src="https://img.shields.io/badge/Theme-Fluid-blue" alt="Theme Fluid">
+	<a href="https://github.com/YangYuS8/blog/actions/workflows/docker-deploy.yml"><img src="https://github.com/YangYuS8/blog/actions/workflows/docker-deploy.yml/badge.svg" alt="Build"></a>
+	<img src="https://img.shields.io/badge/Deploy-Docker%20%2B%20Watchtower-orange" alt="Deploy">
+	<img src="https://img.shields.io/badge/License-Custom-lightgrey" alt="License">
+	<img src="https://img.shields.io/badge/Prism-Enabled-purple" alt="Prism">
+</p>
 
-## 功能特性
+> 基于 **Hexo 8 + Fluid 主题** 的静态博客，Docker 多阶段构建 & GHCR 镜像分发，Watchtower 自动拉取更新，Waline 评论同域反代 `/comment/`。页脚展示构建 commit 短哈希，支持一键备份与按 `abbrlink` 删除文章。
 
-- Fluid 主题：自适应、TOC、暗色模式
-- 稳定短链接：`hexo-abbrlink`（permalink `post/:abbrlink/`）
-- SEO & 订阅：`sitemap.xml`、`atom.xml`
-- 本地搜索：`hexo-generator-searchdb`
-- 代码高亮：Prism 预处理 + 复制按钮
-- Markdown-it 增强：emoji / footnote / task list
-- 文章字数 & 阅读时长：`hexo-symbols-count-time`
-- 压缩优化：`hexo-neat` (HTML/CSS/JS)
-- 评论系统：Waline (MariaDB 持久化)，通过同域子路径 `/comment/` 反代
-- 自动更新：GitHub Actions 构建多架构镜像 + 服务器 `watchtower` 轮询拉取
-- 构建信息：页脚显示镜像构建 commit 短哈希
+---
 
-## 目录结构（关键部分）
+## 📑 目录 (Table of Contents)
 
-```
-Dockerfile                # 多阶段构建 (Node -> Nginx)
-docker-compose.yml        # 生产编排 (blog + waline + waline-db + watchtower)
-docker/nginx.conf         # Nginx + /comment/ 反代 Waline
-.dockerignore             # 精简构建上下文
-_config.yml               # Hexo 主配置 (插件、permalink 等)
-_config.fluid.yml         # 主题配置（页脚、Prism、Waline）
-ops/backup-db.sh          # MariaDB 备份脚本
-ops/update.sh             # 手动拉取最新镜像脚本
-Makefile                  # 常用指令封装
-.env.example              # 环境变量模板（复制为 .env）
-```
+- [特性概览](#-特性概览)
+- [快速开始](#-快速开始)
+- [架构示意](#-架构示意)
+- [目录结构](#-目录结构)
+- [部署（内网 Pull 模式）](#-部署内网-pull-模式)
+- [自动更新机制](#-自动更新机制)
+- [Waline 与数据库](#-waline-与数据库)
+- [备份与恢复](#-备份与恢复)
+- [运维常用命令](#-运维常用命令)
+- [写作与发布流程](#-写作与发布流程)
+- [按 abbrlink 删除文章](#-按-abbrlink-删除文章)
+- [重置 / 清空操作](#-重置--清空操作)
+- [安全与加固建议](#-安全与加固建议)
+- [故障排查速查表](#-故障排查速查表)
+- [Makefile 命令速览](#-makefile-命令速览)
+- [License](#license)
 
-## 服务器部署步骤（内网 pull 模式）
+---
 
-> 假设：服务器已安装 Docker & Docker Compose Plugin，外层有一层公网反向代理（或隧道）转发到此服务器 80 端口。
+## ✅ 特性概览
 
-### 1. 克隆仓库 / 或仅复制编排文件
+| 功能 | 说明 |
+|------|------|
+| 主题 | Fluid，自适应/TOC/深浅色自动 |
+| 短链接 | `hexo-abbrlink` 稳定 `post/:abbrlink/` |
+| 搜索 & 订阅 | 本地搜索 + `atom.xml` + `sitemap.xml` |
+| Markdown 增强 | emoji / footnote / task list |
+| 代码高亮 | Prism 预处理 + 复制按钮 |
+| 内容统计 | 字数 & 阅读时长显示 |
+| 压缩优化 | `hexo-neat` HTML/CSS/JS 压缩 |
+| 评论 | Waline + MariaDB，反代 `/comment/` |
+| 自动更新 | Actions 多架构构建 + Watchtower 拉取 |
+| 构建信息 | 页脚展示构建短哈希 |
+| 数据安全 | 一键备份脚本 + 保留最新 N 份 |
+| 维护辅助 | 按 abbrlink 删除文章 / 重置站点 |
+
+---
+
+## 🚀 快速开始
 ```bash
 git clone https://github.com/YangYuS8/blog.git /opt/hexo
 cd /opt/hexo
-```
-
-### 2. 准备 `.env`
-复制模板并修改强随机密码：
-```bash
-cp .env.example .env
-vi .env
-```
-最重要的字段：
-- `MYSQL_ROOT_PASSWORD`
-- `MYSQL_PASSWORD`
-- `ADMIN_PASSWORD` (Waline 后台管理员)
-
-### 3. 启动（首次）
-```bash
+cp .env.example .env   # 修改强随机密码
 docker compose up -d
 ```
-常见验证：
+验证：
 ```bash
-curl -I http://127.0.0.1/        # 返回 200
-curl -I http://127.0.0.1/comment/ # Waline 反代 (应 200 或 404 json)
-docker compose ps
+curl -I http://127.0.0.1/
+curl -I http://127.0.0.1/comment/
 ```
 
-### 4. 自动更新机制
-
-GitHub Actions 在 `main` 分支有内容或构建相关文件变动时构建并推送镜像：
-```
-ghcr.io/yangyus8/hexo-blog:latest
-```
-服务器上的 `watchtower` 每 30 分钟轮询检测该镜像标签更新，若有新版：
-1. 拉取最新镜像
-2. 重建 `blog` 服务（其它容器不会被动更新）
-3. 清理旧镜像（启用了 `WATCHTOWER_CLEANUP=true`）
-
-查看日志：
+写一篇文章：
 ```bash
-docker logs -f watchtower
+pnpm install
+make new t="第一篇文章"
+make serve   # http://localhost:4000
+git add source/_posts/*.md
+git commit -m "feat(post): 第一篇文章"
+git push     # 触发 CI 构建 & watchtower 自动更新
 ```
 
-### 5. 手动强制更新（无需等待轮询）
+---
+
+## 🧩 架构示意
+
+```mermaid
+graph TD
+	Dev[Developer] -->|git push| CI[GitHub Actions]
+	CI -->|多架构镜像| GHCR[(GHCR Registry)]
+	GHCR -->|poll pull| Watchtower[Watchtower]
+	Watchtower --> Blog[hexo-blog 容器]
+	User -->|HTTPS| ReverseProxy[外部反向代理]
+	ReverseProxy --> Blog
+	Blog -->|/comment/| Waline[Waline 容器]
+	Waline --> MariaDB[(MariaDB 持久化)]
+```
+
+---
+
+## 📁 目录结构
+```
+Dockerfile                # 多阶段构建 (Node -> Nginx)
+docker-compose.yml        # 生产编排
+docker/nginx.conf         # Nginx + Waline 反代
+.dockerignore             # 构建上下文精简
+_config.yml               # Hexo 主配置
+_config.fluid.yml         # 主题配置（含页脚短哈希 partial）
+ops/backup-db.sh          # MariaDB 备份
+ops/update.sh             # 手动更新镜像
+Makefile                  # 常用命令
+.env.example              # 环境变量模板
+source/_posts/            # 文章目录
+```
+
+---
+
+## 🛠 部署（内网 Pull 模式）
+> 服务器已安装 Docker & Compose，外层代理暴露 80/443。
+
+1. 克隆 & 准备 `.env`
+2. `docker compose up -d`
+3. 外层反向代理将域名指向该宿主机端口（或通过隧道）
+4. 等待或强制更新：`make update-local`
+
+关键变量（`.env`）：`MYSQL_ROOT_PASSWORD` / `MYSQL_PASSWORD` / `ADMIN_PASSWORD` / `WALINE_PUBLIC_URL`
+
+---
+
+## ♻️ 自动更新机制
+| 组件 | 行为 |
+|------|------|
+| GitHub Actions | 监听内容/配置变动构建多架构镜像推送 GHCR |
+| Watchtower | 每 1800s 检测 `ghcr.io/yangyus8/hexo-blog:latest` 更新 | 
+| Blog 容器 | 有新镜像 → 自动替换运行 | 
+
+手动立即更新：`make update-local`
+
+---
+
+## 💬 Waline 与数据库
+同域子路径 `/comment/` 反代 Waline：减少跨域 & Cookie 复杂度。
+
+服务组成：
+| 服务 | 说明 |
+|------|------|
+| waline | 评论后端（读取 `.env` 中管理员等） |
+| waline-db | MariaDB 11.4，utf8mb4，持久化卷 |
+| blog | Nginx 静态站，内置反代 `/comment/` |
+
+---
+
+## 🧷 备份与恢复
+创建备份：
 ```bash
-make update-local    # 或: bash ops/update.sh
+make backup-db                 # -> backups/*.sql.gz
+RETAIN=14 make backup-db       # 保留 14 份
 ```
-
-### 6. 数据库备份
-`ops/backup-db.sh` 支持自动保留最近 N 份（默认 7 份）。
+恢复：
 ```bash
-make backup-db                 # 立即备份 -> backups/*.sql.gz
-RETAIN=14 make backup-db       # 自定义保留数量
-BACKUP_DIR=db_bak make backup-db
+gunzip -c backups/waline-XXXX.sql.gz | docker exec -i waline-db sh -c 'mysql -uwaline -p"$MYSQL_PASSWORD" waline'
 ```
-恢复示例：
-```bash
-gunzip -c backups/waline-2025XXXX-XXXXXX.sql.gz | \
-	docker exec -i waline-db sh -c 'mysql -uwaline -p"$MYSQL_PASSWORD" waline'
-```
+Cron 示例：`0 3 * * * /opt/hexo/ops/backup-db.sh >> /var/log/waline-backup.log 2>&1`
 
-推荐 cron：
-```
-0 3 * * * /opt/hexo/ops/backup-db.sh >> /var/log/waline-backup.log 2>&1
-```
+---
 
-### 7. 日常运维命令
+## 🔧 运维常用命令
 ```bash
 make watchtower-logs   # 观察自动更新
-make backup-db         # 立即备份
-make prune             # 清理本地构建残留（若有）
-docker compose ps      # 查看容器状态
+make update-local      # 立即拉取最新镜像
+make backup-db         # 手动备份
+make prune             # 清理镜像缓存
+docker compose ps
 docker compose logs -f blog
 ```
 
-### 8. 修改文章 & 发布流程
-本地写作：
+---
+
+## ✍️ 写作与发布流程
+1. `make new t="标题"`
+2. 编辑生成的 `source/_posts/标题.md`
+3. `make serve` 预览
+4. `git commit && git push`
+5. 等待 watchtower 拉取（或 `make update-local`）
+
+页脚短哈希写入：构建传入 `GIT_COMMIT` → 生成 `source/_includes/build_revision.ejs` → 主题 footer partial 引用。
+
+---
+
+## 🗑 按 abbrlink 删除文章
 ```bash
-pnpm install           # 首次
-make new t="我的第一篇文章"
-make serve             # localhost:4000 预览
-git add source/_posts/*.md
-git commit -m "feat(post): 新文章 - 我的第一篇文章"
-git push
+make delete-post abbr=4a17b156          # 仅提示 (保护)
+make delete-post abbr=4a17b156 force=YES  # 真正删除
+make clean && make build
 ```
-Push 后：
-1. GitHub Actions 触发构建 -> 推送新镜像
-2. 服务器 watchtower 轮询获取新镜像 -> 重启 blog
-3. 几分钟内生效（或手动 `make update-local`）
+匹配多个同 abbrlink 会中止，需手工处理冲突。
 
-### 9. 页脚构建信息
-CI 通过 `--build-arg GIT_COMMIT` 注入完整 SHA，构建阶段截取短哈希写入 `source/_includes/build_revision.ejs`，主题页脚调用：
-```
-©2025 杨与S8 Build: abc1234
+---
+
+## 🔨 重置 / 清空操作
+| 目标 | 删除 | 保留 | 用途 |
+|------|------|------|------|
+| reset-site | public/ db.json posts | 配置/依赖/主题 | 清空内容重写 |
+| reset-all  | 同上并清空 posts | 配置/依赖/主题 | 交付干净骨架 |
+
+执行：
+```bash
+make reset-site confirm=YES
+make reset-all confirm=ALL
 ```
 
-### 10. 安全与加固建议（可选）
+---
+
+## 🔐 安全与加固建议
 | 项目 | 建议 |
 |------|------|
-| MariaDB 访问 | 仅容器网络内可访问，不暴露 3306 端口 |
-| 随机秘钥 | 保证 `.env` 中密码长度≥24 且含多类型字符 |
-| 反向代理 | 外层启用 HTTPS、HSTS、HTTP/2、Gzip/ Brotli |
-| 备份异地 | `rsync` / 对象存储周期上传 `backups/*.gz` |
-| 最小化镜像 | 运行阶段使用 `nginx:alpine` 已较小，如需更小可自制 distroless 静态镜像 |
-| watchtower 时间 | 视需求可调长（如 3600 秒）降低拉取频率 |
+| 密码 | `.env` 内所有密码 ≥ 24 位随机字符 |
+| DB 暴露 | 不映射 3306，仅内部网络访问 |
+| 传输 | 外层强制 HTTPS + HSTS + HTTP/2 |
+| 备份 | 定期异地存储备份归档 |
+| 更新频率 | Watchtower 轮询可调大减少拉取频次 |
+| 镜像 | 若需更小可自制 distroless Nginx 静态镜像 |
 
-## 故障排查速查表
+---
 
+## 🩺 故障排查速查表
 | 现象 | 排查 | 解决 |
 |------|------|------|
-| 页脚不显示 Build | 查看生成的 `public/index.html` 内是否含 `build-revision` | 确认 CI 传了 `GIT_COMMIT`，重新构建 |
-| Waline 无法加载 | `curl -I http://127.0.0.1/comment/` | 检查 Nginx 反代、`waline` 容器是否健康 |
-| 新文章迟迟不更新 | `docker logs watchtower` | 手动 `make update-local` 或调低轮询间隔 |
-| 备份为空 | 查看 `backups/` 目录权限 | 确保挂载路径写入正常 |
-| 构建失败找不到 nginx.conf | 确认 `.dockerignore` 未忽略 `docker/` | 调整后重新 push |
+| 页脚无 Build 哈希 | 查看 `public/index.html` | 确认 CI 传入 `GIT_COMMIT` 重新构建 |
+| Waline 404/失败 | `curl /comment/` | 检查 Nginx 反代 + 容器状态 |
+| 新文章未更新 | `docker logs watchtower` | 手动 `make update-local` |
+| 备份为空 | 目录权限/脚本执行日志 | 确认容器名 & 权限 |
+| COPY nginx.conf 失败 | `.dockerignore` 内容 | 移除对 `docker/` 的忽略 |
 
-## 开发快捷命令（Makefile）
+---
 
+## 🧰 Makefile 命令速览
 | 命令 | 说明 |
 |------|------|
 | `make new t="标题"` | 新文章 |
 | `make serve` | 本地预览 |
 | `make build` | 生成静态文件 |
-| `make docker-build` | 本地构建 Docker 镜像 |
-| `make update-local` | 服务器/本地拉取最新镜像并重启 |
-| `make backup-db` | 立即备份 MariaDB |
-| `make watchtower-logs` | 观察自动更新日志 |
-| `make reset-site confirm=YES` | 清空文章与生成产物（保留配置与依赖）|
-| `make reset-all confirm=ALL` | 更激进：清空文章/生成/数据库文件（不动配置），回到写作骨架 |
-| `make delete-post abbr=XXXX force=YES` | 通过 abbrlink 删除单篇文章（安全防护需 force=YES）|
+| `make docker-build` | 本地构建镜像 |
+| `make update-local` | 拉取最新镜像并重启 |
+| `make backup-db` | MariaDB 备份 |
+| `make watchtower-logs` | 自动更新日志 |
+| `make reset-site confirm=YES` | 清空文章/生成产物 |
+| `make reset-all confirm=ALL` | 重置为骨架 |
+| `make delete-post abbr=XXXX force=YES` | 删除指定文章 |
 
-### 重置 / 清空说明
-
-> 危险操作，务必先做好备份（文章 markdown + 数据库 + 主题定制）。
-
-| 目标 | 会删除 | 保留 | 典型场景 |
-|------|--------|------|----------|
-| `reset-site` | `public/`, `db.json`, `source/_posts/*` | `_config*.yml`, `package.json`, 依赖、主题、`ops/` 脚本 | 重新开始写作但保留所有配置/插件 |
-| `reset-all`  | 同上 + 重新创建空 posts 目录 | 同上 | 给他人交付“干净骨架”或演示初始化 |
-
-执行示例：
-```bash
-make reset-site confirm=YES
-# 或
-make reset-all confirm=ALL
-```
-执行后可用：
-```bash
-make new t="Hello"
-make serve
-```
-
-### 按 abbrlink 删除单篇文章
-
-> 适用于已开启 `hexo-abbrlink` 且 front-matter 中存在 `abbrlink: <值>` 的文章。
-
-命令格式：
-```bash
-make delete-post abbr=<短链接值>
-```
-保护机制：
-1. 不带 `force=YES` 时只提示即将删除的文件路径；不会真的删除。  
-2. 匹配到多个同 abbrlink 文件会直接终止（需手工排查冲突）。
-
-真正删除：
-```bash
-make delete-post abbr=4a17b156 force=YES
-```
-删除后重新生成：
-```bash
-make clean && make build
-```
-可再推送：
-```bash
-git add .
-git commit -m "chore: remove post 4a17b156"
-git push
-```
+---
 
 ## License
-
-个人博客项目，未特别声明的代码与配置默认遵循仓库内已有开源依赖的原始协议；文章内容版权归作者所有。若引用请注明出处。
+个人博客项目，未特别声明的代码与配置默认遵循其依赖原始协议；文章内容版权归作者所有，转载请注明出处。
 
 ---
 欢迎 Issue / PR 反馈与改进。🚀
