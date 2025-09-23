@@ -163,6 +163,57 @@ CI 通过 `--build-arg GIT_COMMIT` 注入完整 SHA，构建阶段截取短哈�
 | `make update-local` | 服务器/本地拉取最新镜像并重启 |
 | `make backup-db` | 立即备份 MariaDB |
 | `make watchtower-logs` | 观察自动更新日志 |
+| `make reset-site confirm=YES` | 清空文章与生成产物（保留配置与依赖）|
+| `make reset-all confirm=ALL` | 更激进：清空文章/生成/数据库文件（不动配置），回到写作骨架 |
+| `make delete-post abbr=XXXX force=YES` | 通过 abbrlink 删除单篇文章（安全防护需 force=YES）|
+
+### 重置 / 清空说明
+
+> 危险操作，务必先做好备份（文章 markdown + 数据库 + 主题定制）。
+
+| 目标 | 会删除 | 保留 | 典型场景 |
+|------|--------|------|----------|
+| `reset-site` | `public/`, `db.json`, `source/_posts/*` | `_config*.yml`, `package.json`, 依赖、主题、`ops/` 脚本 | 重新开始写作但保留所有配置/插件 |
+| `reset-all`  | 同上 + 重新创建空 posts 目录 | 同上 | 给他人交付“干净骨架”或演示初始化 |
+
+执行示例：
+```bash
+make reset-site confirm=YES
+# 或
+make reset-all confirm=ALL
+```
+执行后可用：
+```bash
+make new t="Hello"
+make serve
+```
+
+### 按 abbrlink 删除单篇文章
+
+> 适用于已开启 `hexo-abbrlink` 且 front-matter 中存在 `abbrlink: <值>` 的文章。
+
+命令格式：
+```bash
+make delete-post abbr=<短链接值>
+```
+保护机制：
+1. 不带 `force=YES` 时只提示即将删除的文件路径；不会真的删除。  
+2. 匹配到多个同 abbrlink 文件会直接终止（需手工排查冲突）。
+
+真正删除：
+```bash
+make delete-post abbr=4a17b156 force=YES
+```
+删除后重新生成：
+```bash
+make clean && make build
+```
+可再推送：
+```bash
+git add .
+git commit -m "chore: remove post 4a17b156"
+git push
+```
 
 ## License
 

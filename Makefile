@@ -107,10 +107,47 @@ prune: ## 本地清理无用 Docker 镜像/缓存
 	docker image prune -f
 	docker builder prune -f || true
 
+# ================= 重置 / 清空站点数据 =================
+.PHONY: reset-site
+reset-site: ## 彻底清空 Hexo 文章/生成结果/缓存(危险) 保留配置; 传入 confirm=YES 才执行
+ifndef confirm
+	@echo "[保护] 不执行。若确认要清空，请使用: make reset-site confirm=YES" && exit 1
+endif
+	@echo "[WARN] 将删除: public/ db.json source/_posts/*" && sleep 1
+	rm -rf public/* db.json || true
+	find source/_posts -type f -not -name '.gitkeep' -delete 2>/dev/null || true
+	@echo "[OK] 已清空文章与生成文件。保留 _config.yml 与主题配置。"
+
+.PHONY: reset-all
+reset-all: ## 初始化为最小骨架(危险) 删除: public/ db.json source/_posts/ themes/*(保留 fluid 安装) 需 confirm=ALL
+ifndef confirm
+	@echo "[保护] 不执行。若确认要重置为骨架，请使用: make reset-all confirm=ALL" && exit 1
+endif
+	@echo "[WARN] 将深度清理除依赖与配置外的大部分内容。3 秒后继续 CTRL+C 可中断"; sleep 3
+	rm -rf public/* db.json || true
+	rm -rf source/_posts/* 2>/dev/null || true
+	mkdir -p source/_posts
+	# 保留主题依赖，仅提示用户可重新安装
+	@echo "[OK] 已重置为最小可写作状态。可执行: make new t=示例文章 && make serve"
+
 # ================= 数据库备份 =================
 .PHONY: backup-db
 backup-db: ## 备份 Waline 数据库 (本地/服务器同理，可设置 RETAIN=14 BACKUP_DIR=backups)
 	bash ops/backup-db.sh
+
+# ================= 按 abbrlink 删除单篇文章 =================
+.PHONY: delete-post
+delete-post: ## 删除指定 abbrlink 的文章: make delete-post abbr=xxxx force=YES
+ifndef abbr
+	@echo "缺少参数: abbr=短链接值 (例如: make delete-post abbr=4a17b156)" && exit 1
+endif
+	@match_files=$(grep -rlE "^abbrlink: *${abbr}$$" source/_posts || true); \
+	if [ -z "$$match_files" ]; then echo "未找到 abbrlink=${abbr} 的文章"; exit 1; fi; \
+	count=$(echo "$$match_files" | wc -l); \
+	if [ "$$count" -gt 1 ]; then echo "匹配到多个文件 (可能异常, 请手动核查):"; echo "$$match_files"; exit 1; fi; \
+	file="$$match_files"; \
+	if [ -z "$$force" ]; then echo "[保护] 将删除: $$file"; echo "确认执行: make delete-post abbr=${abbr} force=YES"; exit 1; fi; \
+	rm -f "$$file" && echo "[OK] 已删除 $$file" && echo "可执行: make clean && make build 重新生成"
 
 # ================= 实用信息 =================
 .PHONY: help
