@@ -149,6 +149,19 @@ endif
 	if [ -z "$$force" ]; then echo "[保护] 将删除: $$file"; echo "确认执行: make delete-post abbr=${abbr} force=YES"; exit 1; fi; \
 	rm -f "$$file" && echo "[OK] 已删除 $$file" && echo "可执行: make clean && make build 重新生成"
 
+# ================= MinIO/对象存储（可选） =================
+.PHONY: minio-up
+minio-up: ## 启动 MinIO (compose override): docker compose -f docker-compose.yml -f docker-compose.minio.yml up -d
+	$(DOCKER_COMPOSE) -f docker-compose.yml -f docker-compose.minio.yml up -d
+
+.PHONY: minio-init
+minio-init: ## 初始化 MinIO：创建桶并设置匿名只读策略
+	bash ops/init-minio.sh
+
+.PHONY: minio-sync
+minio-sync: ## 将 source/images 同步至 MinIO: make minio-sync 或指定 SRC=source/images
+	bash ops/sync-images.sh $${SRC:-source/images}
+
 # ================= 实用信息 =================
 .PHONY: help
 help: ## 显示所有可用目标

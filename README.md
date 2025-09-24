@@ -22,6 +22,7 @@
 - [部署（内网 Pull 模式）](#-部署内网-pull-模式)
 - [自动更新机制](#-自动更新机制)
 - [Waline 与数据库](#-waline-与数据库)
+- [对象存储：MinIO（可选）](#-对象存储minio可选)
 - [备份与恢复](#-备份与恢复)
 - [运维常用命令](#-运维常用命令)
 - [写作与发布流程](#-写作与发布流程)
@@ -143,6 +144,40 @@ source/_posts/            # 文章目录
 | waline | 评论后端（读取 `.env` 中管理员等） |
 | waline-db | MariaDB 11.4，utf8mb4，持久化卷 |
 | blog | Nginx 静态站，内置反代 `/comment/` |
+
+---
+
+## 🪣 对象存储：MinIO（可选）
+用于存放图片与附件，配合外层 CDN/反代域名统一对外暴露。
+
+1) 启动 MinIO
+```bash
+cp .env.example .env   # 填写 MINIO_*
+docker compose -f docker-compose.yml -f docker-compose.minio.yml up -d
+# 或
+make minio-up
+```
+
+2) 初始化桶与匿名只读策略
+```bash
+make minio-init
+```
+
+3) 为文章启用 CDN 前缀替换（可选）
+- 设置环境变量 `MINIO_PUBLIC_PREFIX`（例如 `https://cdn.example.com`）。
+- 构建时 Hexo 脚本会将 `<img src="/images/**">` 替换为 `MINIO_PUBLIC_PREFIX/images/**`。
+
+4) 上传图片的推荐方式
+- 使用 MinIO 控制台 `:9001` 上传到 `/${MINIO_BUCKET}/images/`。
+- 或者本地放置于 `source/images/`，由构建产物直接发布（无需上传）。若配置 `MINIO_PUBLIC_PREFIX`，链接将自动替换为 CDN 前缀（保持零侵入写作）。
+
+批量同步本地图片到 MinIO：
+```bash
+make minio-sync                 # 默认同步 source/images -> s3://blog/images/
+SRC=other/images make minio-sync
+```
+
+注意：生产环境建议将 MinIO 放在私有网络，仅通过 CDN/反代域名暴露读流量；控制台建议加 ACL 限制。
 
 ---
 
