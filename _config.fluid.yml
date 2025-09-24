@@ -4,7 +4,7 @@
 # 站点导航栏
 navbar:
   logo:
-    text: 杨与S8
+    text: YourName
   menu:
     - name: 首页
       link: /
@@ -26,7 +26,7 @@ index:
 
 # 页脚
 footer:
-  content: '©2025 杨与S8 <%- partial("_includes/build_revision") %>'
+  content: '©<%= new Date().getFullYear() %> YourName <%- partial("_includes/build_revision") %>'
   beian:
     enable: false
 

@@ -10,6 +10,8 @@ on:
       - '.dockerignore'
       - 'docker/**'
       - '.github/workflows/docker-deploy.yml'
+      - '_config.yml'
+      - '_config.fluid.yml'
   workflow_dispatch:
 
 jobs:
@@ -65,5 +67,6 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             GIT_COMMIT=${{ github.sha }}
+            REPO_URL=${{ github.server_url }}/${{ github.repository }}
 
   # 已改为服务器侧 watchtower / 手动拉取更新，取消直接 SSH 部署 Job

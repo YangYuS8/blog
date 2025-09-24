@@ -1,7 +1,6 @@
-version: '3.9'
 services:
   blog:
-    image: ghcr.io/yangyus8/hexo-blog:latest  # CI 构建推送后的镜像
+    image: ${BLOG_IMAGE:-ghcr.io/OWNER/hexo-blog:latest}  # CI 构建推送后的镜像（建议在 .env 中配置 BLOG_IMAGE）
     container_name: hexo-blog
     restart: unless-stopped
     ports:
@@ -9,7 +8,7 @@ services:
     depends_on:
       - waline
     environment:
-      WALINE_SERVER_URL: ${WALINE_PUBLIC_URL:-https://blog.yangyus8.top/comment/}
+      WALINE_SERVER_URL: ${WALINE_PUBLIC_URL:-https://blog.example.com/comment/}
     labels:
       # 仅为 blog 服务开启 watchtower 自动更新，其它服务保持不自动更新
       - "com.centurylinklabs.watchtower.enable=true"
@@ -24,7 +23,7 @@ services:
       TZ: Asia/Shanghai
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
-      - waline_mysql:/var/lib/mysql
+      - ${WALINE_DB_DIR:-./data/waline-db}:/var/lib/mysql
 
   waline:
     image: walinejs/server:latest
@@ -40,7 +39,7 @@ services:
       MYSQL_HOST: waline-db
       MYSQL_PORT: 3306
     volumes:
-      - waline_data:/data
+      - ${WALINE_DATA_DIR:-./data/waline}:/data
     expose:
       - "8360"
 
@@ -57,8 +56,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
 
-volumes:
-  waline_data:
-  waline_mysql:
+
 
 # 生产环境建议用 Caddy / Nginx 在宿主机做 80/443 入口 + 证书管理

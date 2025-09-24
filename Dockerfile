@@ -23,8 +23,9 @@ RUN SHORT_SHA=$(printf "%s" "$GIT_COMMIT_SHA" | cut -c1-7); \
 
 ## Stage 2: Nginx minimal image serving static files
 FROM nginx:1.27-alpine AS runtime
-LABEL maintainer="YangYuS8 <noreply@users.noreply.github.com>"
-LABEL org.opencontainers.image.source="https://github.com/YangYuS8/blog"
+ARG REPO_URL
+LABEL maintainer="YourName <you@example.com>"
+LABEL org.opencontainers.image.source=${REPO_URL:-"https://github.com/OWNER/REPO"}
 
 ## Copy custom nginx config
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf

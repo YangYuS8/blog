@@ -62,9 +62,6 @@ importers:
       hexo-theme-fluid:
         specifier: ^1.9.7
         version: 1.9.8(nunjucks@3.2.4(chokidar@3.6.0))
-      hexo-theme-landscape:
-        specifier: ^1.0.0
-        version: 1.1.0
       markdown-it-emoji:
         specifier: ^3.0.0
         version: 3.0.0
@@ -654,9 +651,6 @@ packages:
     engines: {node: '>=8.10.0'}
     peerDependencies:
       nunjucks: ^3.0.0
-
-  hexo-theme-landscape@1.1.0:
-    resolution: {integrity: sha512-nszjixBEiEDZjf7glAGbHg0nKGHZdUDwzFVVdRDeu4FeHfGcY5CZNl9sF4vSligjnD8IwFXpDfx5E+GRmNKvWg==}
 
   hexo-util@1.9.0:
     resolution: {integrity: sha512-WXv8IYd9HFtP6u/y7uoI//Fmg88uhKKDto9KeNNRdWf4HG/bRh/1NcSQZWu81DOZNshWD1rvFU8OKb7bUnX1WA==}
@@ -2127,8 +2121,6 @@ snapshots:
   hexo-theme-fluid@1.9.8(nunjucks@3.2.4(chokidar@3.6.0)):
     dependencies:
       nunjucks: 3.2.4(chokidar@3.6.0)
-
-  hexo-theme-landscape@1.1.0: {}
 
   hexo-util@1.9.0:
     dependencies:

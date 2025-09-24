@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 杨与S8的个人博客
-subtitle: 杨与S8的个人博客
+title: 你的博客标题
+subtitle: 你的博客副标题
 description: ''
 keywords:
-author: 杨与S8
+author: 你的名字
 language: zh-CN
 timezone: ''
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://blog.yangyus8.top
+url: https://blog.example.com
 # 原默认 permalink 已由下方 abbrlink 规则覆盖
 # permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -194,7 +194,7 @@ symbols_count_time:
 waline:
   enable: true
   # 使用反向代理子路径 /comment/ ，确保上游或容器内 nginx 已代理到 waline 服务
-  serverURL: https://blog.yangyus8.top/comment/
+  serverURL: https://blog.example.com/comment/
   comment: true
   pageview: true
   locale:
