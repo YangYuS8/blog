@@ -29,17 +29,17 @@ if (!fileExtensionRegex.test(fileName)) {
 }
 
 const targetDir = "./src/content/posts/"
-const fullPath = path.join(targetDir, fileName)
+const normalizedFileName = fileName.replace(fileExtensionRegex, "")
+const postDir = path.join(targetDir, normalizedFileName)
+const fullPath = path.join(postDir, "index.md")
 
 if (fs.existsSync(fullPath)) {
   console.error(`Error: File ${fullPath} already exists `)
   process.exit(1)
 }
 
-// recursive mode creates multi-level directories
-const dirPath = path.dirname(fullPath)
-if (!fs.existsSync(dirPath)) {
-    fs.mkdirSync(dirPath, { recursive: true })
+if (!fs.existsSync(postDir)) {
+  fs.mkdirSync(postDir, { recursive: true })
 }
 
 const content = `---
@@ -54,6 +54,6 @@ lang: ''
 ---
 `
 
-fs.writeFileSync(path.join(targetDir, fileName), content)
+fs.writeFileSync(fullPath, content)
 
 console.log(`Post ${fullPath} created`)

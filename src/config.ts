@@ -8,33 +8,33 @@ import type {
 import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "Fuwari",
-	subtitle: "Demo Site",
-	lang: "en", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
+	title: "杨与S8的博客",
+	subtitle: "主页",
+	lang: "zh_CN", // 语言代码，例如 'en'、'zh_CN'、'ja' 等
 	themeColor: {
-		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
-		fixed: false, // Hide the theme color picker for visitors
+		hue: 250, // 主题色的默认色相，范围为 0 到 360。例如 red: 0、teal: 200、cyan: 250、pink: 345
+		fixed: false, // 对访客隐藏主题色选择器
 	},
 	banner: {
-		enable: false,
-		src: "assets/images/demo-banner.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
-		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
+		enable: true,
+		src: "assets/images/月见八千代.jpeg", // 相对于 /src 目录；如果以 '/' 开头，则相对于 /public 目录
+		position: "center", // 等同于 object-position，仅支持 'top'、'center'、'bottom'，默认值为 'center'
 		credit: {
-			enable: false, // Display the credit text of the banner image
-			text: "", // Credit text to be displayed
-			url: "", // (Optional) URL link to the original artwork or artist's page
+			enable: true, // 显示横幅图片的署名信息
+			text: "月見（るなみ） ヤチヨ", // 要显示的署名文本
+			url: "https://zh.moegirl.org.cn/%E6%9C%88%E8%A7%81%E5%85%AB%E5%8D%83%E4%BB%A3", // 可选：原图作品或作者页面的链接
 		},
 	},
 	toc: {
-		enable: true, // Display the table of contents on the right side of the post
-		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
+		enable: true, // 在文章右侧显示目录
+		depth: 2, // 目录中显示的最大标题层级，范围为 1 到 3
 	},
 	favicon: [
-		// Leave this array empty to use the default favicon
+		// 将此数组留空即可使用默认 favicon
 		// {
-		//   src: '/favicon/icon.png',    // Path of the favicon, relative to the /public directory
-		//   theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
-		//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
+		// src: '/favicon/icon.png',    // favicon 路径，相对于 /public 目录
+		// theme: 'light',              // 可选：'light' 或 'dark'，仅在浅色与深色模式使用不同 favicon 时设置
+		// sizes: '32x32',              // 可选：favicon 尺寸，仅在存在不同尺寸 favicon 时设置
 		// }
 	],
 };
@@ -46,33 +46,43 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.About,
 		{
 			name: "GitHub",
-			url: "https://github.com/saicaca/fuwari", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
+			url: "https://github.com/YangYuS8", // 内部链接不应包含 base path，系统会自动补全
+			external: true, // 显示外部链接图标，并在新标签页打开
 		},
 	],
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
-	name: "Lorem Ipsum",
-	bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+	avatar: "assets/images/YYS8.JPG", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	name: "杨与S8",
+	bio: "铅笔越削越短，人生越读越薄。",
 	links: [
 		{
-			name: "Twitter",
-			icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
-			// You will need to install the corresponding icon set if it's not already included
+			name: "Bilibili",
+			icon: "fa6-brands:bilibili", // 图标代码可在 https://icones.js.org/ 查询
+			// 如果项目中尚未包含对应图标集，你需要先安装它
 			// `pnpm add @iconify-json/<icon-set-name>`
-			url: "https://twitter.com",
+			url: "https://space.bilibili.com/435542360",
 		},
 		{
 			name: "Steam",
 			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
+			url: "https://steamcommunity.com/id/YangYuS8/",
 		},
 		{
 			name: "GitHub",
 			icon: "fa6-brands:github",
-			url: "https://github.com/saicaca/fuwari",
+			url: "https://github.com/YangYuS8",
+		},
+		{
+			name: "Reddit",
+			icon: "fa6-brands:reddit",
+			url: "https://www.reddit.com/user/YangYuS8/",
+		},
+		{
+			name: "Linux Do",
+			icon: "fa6-brands:linux",
+			url: "https://linux.do/u/yangyus8/summary",
 		},
 	],
 };
@@ -84,7 +94,7 @@ export const licenseConfig: LicenseConfig = {
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
-	// Note: Some styles (such as background color) are being overridden, see the astro.config.mjs file.
-	// Please select a dark theme, as this blog theme currently only supports dark background color
+	// 注意：部分样式（例如背景色）会被覆盖，详见 astro.config.mjs 文件。
+	// 请选择深色主题，因为当前博客主题只支持深色背景
 	theme: "github-dark",
 };
