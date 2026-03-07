@@ -1,9 +1,10 @@
 ---
 
-import { profileConfig } from "../config";
+import { profileConfig, siteConfig } from "../config";
 import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
+const filings = siteConfig.filings;
 ---
 
 <!--<div class="border-t border-[var(&#45;&#45;primary)] mx-16 border-dashed py-8 max-w-[var(&#45;&#45;page-width)] flex flex-col items-center justify-center px-6">-->
@@ -13,7 +14,43 @@ const currentYear = new Date().getFullYear();
     <div class="transition text-50 text-sm text-center">
         &copy; <span id="copyright-year">{currentYear}</span> {profileConfig.name}. All Rights Reserved. /
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('rss.xml')}>RSS</a> /
-        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a><br>
+        <a class="transition link text-[var(--primary)] font-medium" target="_blank" href={url('sitemap-index.xml')}>Sitemap</a>
+        {
+            (filings?.icp?.enable || filings?.police?.enable) && <br />
+        }
+        {
+            filings?.icp?.enable && filings.icp.text && (
+                <>
+                    <a
+                        class="transition link text-[var(--primary)] font-medium"
+                        target="_blank"
+                        rel="noreferrer"
+                        href={filings.icp.url}
+                    >
+                        {filings.icp.text}
+                    </a>
+                    {filings?.police?.enable && filings.police.text ? <span> / </span> : null}
+                </>
+            )
+        }
+        {
+            filings?.police?.enable && filings.police.text && (
+                <a
+                    class="transition link text-[var(--primary)] font-medium inline-flex items-center justify-center gap-1"
+                    target="_blank"
+                    rel="noreferrer"
+                    href={filings.police.url}
+                >
+                    {
+                        filings.police.icon && (
+                            <img src={filings.police.icon} alt="公安备案图标" class="h-4 w-4" />
+                        )
+                    }
+                    <span>{filings.police.text}</span>
+                </a>
+            )
+        }
+        <br />
         Powered by
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/saicaca/fuwari">Fuwari</a>

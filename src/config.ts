@@ -29,6 +29,19 @@ export const siteConfig: SiteConfig = {
 		enable: true, // 在文章右侧显示目录
 		depth: 2, // 目录中显示的最大标题层级，范围为 1 到 3
 	},
+	filings: {
+		icp: {
+			enable: true,
+			text: "辽ICP备2024030730号-1",
+			url: "https://beian.miit.gov.cn/",
+		},
+		police: {
+			enable: true,
+			text: "川公网安备51100002000181号",
+			url: "https://beian.mps.gov.cn/#/query/webSearch?code=51100002000181",
+			icon: "/beian-police.png",
+		},
+	},
 	favicon: [
 		// 将此数组留空即可使用默认 favicon
 		// {

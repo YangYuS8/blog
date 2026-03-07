@@ -34,6 +34,19 @@ export type SiteConfig = {
 		enable: boolean;
 		depth: 1 | 2 | 3;
 	};
+	filings?: {
+		icp?: {
+			enable: boolean;
+			text: string;
+			url: string;
+		};
+		police?: {
+			enable: boolean;
+			text: string;
+			url: string;
+			icon?: string;
+		};
+	};
 
 	favicon: Favicon[];
 };
