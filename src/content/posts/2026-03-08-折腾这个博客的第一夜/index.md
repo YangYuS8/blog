@@ -1,5 +1,6 @@
 ---
 title: 折腾这个博客的第一夜
+urlSlug: '20260308-01'
 published: 2026-03-08
 description: 从 GitHub Actions 自动部署，到专用部署用户，再到把 ICP 和公安备案接进页脚，这是这个博客上线前真正完整的一次收尾。
 image: ''

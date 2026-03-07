@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getPostPublicSlug } from "@utils/content-utils";
 import { getPostUrlBySlug } from "@utils/url-utils";
 import PostCard from "./PostCard.astro";
 
@@ -17,7 +18,7 @@ const interval = 50;
                 category={entry.data.category}
                 published={entry.data.published}
                 updated={entry.data.updated}
-                url={getPostUrlBySlug(entry.slug)}
+                url={getPostUrlBySlug(getPostPublicSlug(entry))}
                 image={entry.data.image}
                 description={entry.data.description}
                 draft={entry.data.draft}
