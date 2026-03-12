@@ -63,7 +63,7 @@ function getUniquePostDir(baseDir) {
   return candidateDir
 }
 
-const args = process.argv.slice(2)
+const args = process.argv.slice(2).filter((arg) => arg !== "--")
 
 if (args.length === 0) {
   console.error(`Error: No title argument provided
