@@ -16,6 +16,8 @@ lang: 'zh_CN'
 
 这次刚好借着在 CachyOS 上折腾 OpenCode，我把几个相关仓库和文档都顺手看了一遍。最后的结论倒没有想象中复杂：先别急着把一堆 skill 往里塞，先搞清楚谁是安装器，谁是技能内容，再选一个最适合日常使用的起点就行。
 
+后面我又顺手把浏览器能力也接进来了：一篇写的是 [给 OpenCode 接上 Playwright MCP 之后，我为什么又拆成了轻量版和调试版](/posts/20260316-01/)，另一篇写的是 [在 CachyOS 上给 OpenCode 接 Playwright CLI：为什么我又手动搬了一次 skill](/posts/20260316-02/)。如果你是从这篇开始看的，可以把它们当成后续折腾记录接着读。
+
 ## 我最先看的是 `vercel-labs/skills`
 
 ::github{repo="vercel-labs/skills"}
