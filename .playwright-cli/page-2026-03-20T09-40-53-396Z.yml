@@ -1,0 +1,113 @@
+- generic [ref=e1]:
+  - link "跳至内容" [ref=e3] [cursor=pointer]:
+    - /url: "#main"
+  - generic [ref=e7]:
+    - generic [ref=e9]:
+      - generic:
+        - generic:
+          - generic:
+            - button "打开边栏":
+              - img
+        - generic:
+          - generic:
+            - link:
+              - /url: /
+              - generic:
+                - img
+          - generic:
+            - generic:
+              - generic:
+                - img
+          - generic:
+            - link:
+              - /url: /images
+              - generic:
+                - img
+      - generic [ref=e10]:
+        - heading "历史聊天记录" [level=2] [ref=e11]
+        - navigation "历史聊天记录" [ref=e12]:
+          - generic [ref=e15]:
+            - link "主页" [ref=e16] [cursor=pointer]:
+              - /url: /
+              - img [ref=e17]
+            - button "关闭边栏" [expanded] [ref=e20]:
+              - img [ref=e21]
+          - complementary [ref=e23]:
+            - link "新聊天 控制 Shift O" [ref=e24] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e25]:
+                - img [ref=e27]
+                - generic [ref=e30]: 新聊天
+              - generic [ref=e32]:
+                - generic "控制" [ref=e33]:
+                  - generic [ref=e34]: Ctrl
+                  - text: +
+                - generic "Shift" [ref=e35]:
+                  - generic [ref=e36]: Shift
+                  - text: +
+                - generic [ref=e38]: O
+            - generic [ref=e39] [cursor=pointer]:
+              - generic [ref=e40]:
+                - img [ref=e42]
+                - generic [ref=e45]: 搜索聊天
+              - generic [ref=e47]:
+                - generic "控制" [ref=e48]:
+                  - generic [ref=e49]: Ctrl
+                  - text: +
+                - generic [ref=e51]: K
+          - link "图片" [ref=e52] [cursor=pointer]:
+            - /url: /images
+            - img [ref=e54]
+            - generic [ref=e57]: 图片
+          - generic [ref=e58]:
+            - link "应用" [ref=e59] [cursor=pointer]:
+              - /url: /apps
+              - img [ref=e61]
+              - generic [ref=e64]: 应用
+            - generic [ref=e65] [cursor=pointer]:
+              - img [ref=e67]
+              - generic [ref=e70]: 深度研究
+            - generic [ref=e71] [cursor=pointer]:
+              - img [ref=e73]
+              - generic [ref=e76]: Health
+          - generic [ref=e78]:
+            - generic [ref=e79]:
+              - paragraph [ref=e80]: 获取为你量身定制的回复
+              - paragraph [ref=e81]: 登录以获取基于已保存聊天的回答，并可创建图片和上传文件。
+            - button "登录" [ref=e83] [cursor=pointer]:
+              - generic [ref=e84]: 登录
+    - generic [ref=e86]:
+      - banner:
+        - button "模型选择器" [ref=e87] [cursor=pointer]:
+          - generic [ref=e88]: ChatGPT
+          - img [ref=e89]
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - button "登录" [ref=e96] [cursor=pointer]:
+              - generic [ref=e98]: 登录
+            - button "免费注册" [ref=e99] [cursor=pointer]:
+              - generic [ref=e100]: 免费注册
+          - button "打开“个人资料”菜单" [ref=e101] [cursor=pointer]:
+            - img [ref=e103]
+      - main [ref=e105]:
+        - generic [ref=e108]:
+          - generic [ref=e112]:
+            - generic [ref=e116]:
+              - textbox "给“ChatGPT“发送消息" [active] [ref=e119]
+              - button "添加文件等" [ref=e122] [cursor=pointer]:
+                - img
+              - button "启动语音功能" [ref=e127] [cursor=pointer]:
+                - img [ref=e129]
+                - generic [ref=e131]: 语音
+            - button [ref=e132]
+            - button [ref=e133]
+          - generic [ref=e136]:
+            - text: 向 AI 聊天机器人 ChatGPT 发送消息即表示，你同意我们的
+            - link "条款" [ref=e137] [cursor=pointer]:
+              - /url: https://openai.com/terms
+            - text: 并已阅读我们的
+            - link "隐私政策" [ref=e138] [cursor=pointer]:
+              - /url: https://openai.com/privacy
+            - text: 。查看 Cookie 首选项。
+  - alert [ref=e139]
+  - status [ref=e140]
