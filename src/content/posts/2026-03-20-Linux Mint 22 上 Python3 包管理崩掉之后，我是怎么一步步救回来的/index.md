@@ -1,6 +1,6 @@
 ---
 title: "Linux Mint 22 上 Python3 包管理崩掉之后，我是怎么一步步救回来的"
-urlSlug: '20260320-01'
+urlSlug: '20260320-02'
 published: 2026-03-20
 description: '记录我在 Linux Mint 22 上排查 Python3 核心包损坏的过程：从 dpkg 状态异常、post-installation 脚本报错，到一步步把 python3 和相关依赖恢复到 ii。'
 image: ''
@@ -9,7 +9,6 @@ category: '编程实践'
 draft: false 
 lang: 'zh_CN'
 ---
-
 这次排障一开始并不是那种“装个普通包失败，补一下依赖就行”的感觉，而是我一打开 `dpkg -l | grep python3`，就先被状态列吓了一下。
 
 我当时看到的几行是：
