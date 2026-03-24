@@ -120,7 +120,7 @@ Hostname=Zabbix server
 
 > **哪些 Zabbix server / proxy 被允许来请求这个 agent**
 
-而你现在的配置写的是：
+而当时这台机器上的配置写的是：
 
 ```ini
 Server=127.0.0.1
@@ -129,7 +129,7 @@ Server=127.0.0.1
 也就是说：
 
 - 只有 `127.0.0.1` 被允许访问这个 agent
-- 但你的 `zabbix-server` 根本不在宿主机本体上
+- 但 `zabbix-server` 并不在宿主机本体上
 - 它跑在 Docker 容器里
 
 所以还需要继续看 `zabbix-server` 容器的实际来源地址。
@@ -162,7 +162,7 @@ Linux: Zabbix agent is not available (for 3m)
 
 这也是这类问题最容易踩的地方：
 
-> 你看到 agent2 在宿主机本地是正常的，但真正访问它的是容器，而不是宿主机上的 localhost。
+> 从宿主机本地看，agent2 明明是正常的；但真正访问它的其实是容器，而不是宿主机上的 localhost。
 
 ## 修复方式
 
@@ -235,13 +235,13 @@ Server=
 
 ## 这类场景以后怎么快速判断
 
-如果你也遇到类似场景：
+如果后面我再遇到类似场景：
 
 - Zabbix server 在 Docker 里
 - agent / agent2 在宿主机上
 - 前端正常但 host availability 报错
 
-我建议按这个顺序排：
+我会优先按这个顺序排：
 
 ### 1. 先确认是不是 Web 问题
 
