@@ -9,13 +9,14 @@ category: '软件教程'
 draft: false
 lang: 'zh_CN'
 ---
-
 如果你已经在 Linux 上用过一段时间桌面环境，基本都会遇到同一个问题：
 
 - 想继续使用 Wallpaper Engine 的创意工坊内容
 - 但 Windows 上那套流程没法直接搬过来
 
 LWE（Linux Wallpaper Engine workflow）就是为这个迁移场景准备的。它不是一个“花哨皮肤壳子”，而是一套偏实用的桌面工作流：帮你在 Linux 上浏览、导入、管理、并按显示器应用 Wallpaper Engine 内容。
+
+::github{repo="YangYuS8/lwe"}
 
 这篇文章不讲开发细节，只讲普通用户最关心的事情：**怎么装、怎么配、怎么用**。
 
