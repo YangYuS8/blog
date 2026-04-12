@@ -257,9 +257,15 @@ PasswordAuthentication no
 
 但这一步我建议永远放在最后做，而且最好先留一个已登录会话别关，确认新会话能进，再决定是否完全切掉密码登录。
 
-## 如果你有多台机器
+## 如果你有多台机器，`~/.ssh/config` 会非常省事
 
-如果你要管理多台服务器，其实可以继续把 `~/.ssh/config` 用起来。
+如果你要管理多台服务器，我很建议把 `~/.ssh/config` 用起来。
+
+它的作用很简单：
+
+- 给远程主机起一个短名字
+- 顺手把用户名、端口、密钥文件都写进去
+- 以后直接用一个短命令登录
 
 例如：
 
@@ -283,6 +289,120 @@ ssh vps
 ```
 
 不用每次都敲完整地址。
+
+### `~/.ssh/config` 文件放在哪里
+
+位置就是：
+
+```bash
+~/.ssh/config
+```
+
+如果没有这个文件，可以自己创建：
+
+```bash
+touch ~/.ssh/config
+chmod 600 ~/.ssh/config
+```
+
+## 最常用的几个配置项
+
+对大多数人来说，先记住下面这些就够了。
+
+### `Host`
+这是你给这台机器起的别名。
+
+例如：
+
+```text
+Host pve
+```
+
+那以后你就可以直接：
+
+```bash
+ssh pve
+```
+
+### `HostName`
+这是服务器的真实地址，可以是：
+
+- IP
+- 域名
+
+例如：
+
+```text
+HostName 192.168.3.16
+```
+
+### `User`
+指定默认登录用户。
+
+例如：
+
+```text
+User root
+```
+
+### `Port`
+如果这台机器的 SSH 不是默认 22 端口，就可以写：
+
+```text
+Port 2222
+```
+
+### `IdentityFile`
+指定用哪把私钥。
+
+例如：
+
+```text
+IdentityFile ~/.ssh/id_ed25519
+```
+
+这在你有多把密钥时尤其有用。
+
+## 一个更完整一点的例子
+
+```text
+Host pve
+    HostName 192.168.3.16
+    User root
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+
+Host blog-vps
+    HostName your.server.ip
+    User root
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+```
+
+以后你就可以这样用：
+
+```bash
+ssh pve
+ssh blog-vps
+```
+
+## `~/.ssh/config` 还有什么好处
+
+除了省得你反复敲地址，它还有几个很实用的点：
+
+- 多台机器不会记混
+- 不同服务器可以指定不同密钥
+- 自定义端口时不用每次加 `-p`
+- 后面配 `scp`、`rsync`、Git SSH 时也会更顺手
+
+例如：
+
+```bash
+scp file.txt pve:/root/
+rsync -av ./project blog-vps:/srv/project
+```
+
+这时候别名也一样能直接用。
 
 ## 我自己更推荐的顺序
 
