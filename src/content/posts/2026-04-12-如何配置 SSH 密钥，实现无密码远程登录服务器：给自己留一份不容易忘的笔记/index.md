@@ -270,7 +270,7 @@ Host pve
     IdentityFile ~/.ssh/id_ed25519
 
 Host vps
-    HostName 47.108.64.236
+    HostName your.server.ip
     User root
     IdentityFile ~/.ssh/id_ed25519
 ```
