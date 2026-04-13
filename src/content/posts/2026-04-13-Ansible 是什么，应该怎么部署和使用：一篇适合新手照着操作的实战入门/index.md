@@ -198,7 +198,7 @@ cd ~/ansible-lab
 ```ini
 [servers]
 server-a ansible_host=192.168.3.20 ansible_user=root ansible_python_interpreter=/usr/bin/python3
-server-b ansible_host=8.137.120.57 ansible_user=root ansible_python_interpreter=/usr/bin/python3
+server-b ansible_host=your.server.ip ansible_user=root ansible_python_interpreter=/usr/bin/python3
 ```
 
 这里要先理解几个点：
@@ -439,27 +439,126 @@ ansible-playbook -i inventory.ini nginx.yml
 
 这就是一个很完整的小练习。
 
-## 目录要不要一开始就做很复杂
+## 什么时候该开始用 `group_vars` 和 `host_vars`
 
-我的建议是：不要。
+一开始机器少的时候，很多人会把变量直接写在 inventory 里，这当然能用。
 
-新手阶段先用最简单结构就够了：
+但只要配置一多，就会开始变乱。这时候就该引入：
+
+- `group_vars`
+- `host_vars`
+
+### `group_vars` 是做什么的
+
+顾名思义，就是给“一组机器”统一定义变量。
+
+例如你有一个 `servers` 组，就可以写：
 
 ```text
 ansible-lab/
 ├── inventory.ini
 ├── bootstrap.yml
-└── nginx.yml
+└── group_vars/
+    └── servers.yml
 ```
+
+`group_vars/servers.yml` 里可以放：
+
+```yaml
+common_packages:
+  - curl
+  - git
+  - vim
+  - htop
+```
+
+然后在 playbook 里直接用：
+
+```yaml
+- hosts: servers
+  become: true
+  tasks:
+    - name: Install common packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+        update_cache: true
+```
+
+这样你以后如果想改统一的软件包列表，只用改一处。
+
+### `host_vars` 是做什么的
+
+`host_vars` 则是给“某一台机器”单独定义变量。
+
+例如目录结构：
+
+```text
+ansible-lab/
+├── inventory.ini
+├── bootstrap.yml
+├── group_vars/
+│   └── servers.yml
+└── host_vars/
+    ├── server-a.yml
+    └── server-b.yml
+```
+
+例如 `host_vars/server-a.yml`：
+
+```yaml
+nginx_server_name: server-a.local
+```
+
+`host_vars/server-b.yml`：
+
+```yaml
+nginx_server_name: server-b.local
+```
+
+这样同一个 playbook 就能根据不同主机自动使用不同变量。
+
+### 什么时候该用它们
+
+我的建议是：
+
+- **变量开始重复**，就考虑 `group_vars`
+- **某台机器有特殊值**，就考虑 `host_vars`
+
+### 新手最适合的理解方式
+
+你可以先这样记：
+
+- `inventory`：机器清单
+- `group_vars`：一组机器的共享变量
+- `host_vars`：单台机器的特殊变量
+
+## 目录要不要一开始就做很复杂
+
+我的建议仍然是：不要。
+
+刚开始先有最基础结构就行，例如：
+
+```text
+ansible-lab/
+├── inventory.ini
+├── bootstrap.yml
+├── nginx.yml
+├── group_vars/
+│   └── servers.yml
+└── host_vars/
+    └── server-a.yml
+```
+
+这已经足够覆盖很多新手场景了。
 
 等你真的写多了，再去引入：
 
-- `group_vars`
-- `host_vars`
 - `roles`
-- 更复杂的项目结构
+- 更细的目录拆分
+- 模板和 handler
 
-刚开始最容易犯的错，就是还没把最基础的东西跑顺，就先把目录搞得很重。
+刚开始最容易犯的错，就是还没把基本流程跑顺，就先把结构做得太大。
 
 ## 最常见的报错和排查方向
 
