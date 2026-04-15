@@ -1,8 +1,8 @@
 ---
-title: "我准备怎么用两台服务器做完一次运维实践任务：从环境准备到监控与日志的落地路线"
+title: "我准备怎么用一台服务器做完一次运维实践任务：从环境准备到监控与日志的落地路线"
 urlSlug: '20260413-02'
 published: 2026-04-13
-description: '一篇偏实践记录风格的文章：当我手上有一台本地服务器和一台公网云服务器时，怎样以 Ansible 为主线，把环境初始化、k3s、Prometheus、Grafana 和日志服务一步步自动化落地。'
+description: '一篇偏实践记录风格的文章：当我手上只有一台 k3s 服务器时，怎样以 Ansible 为主线，把环境初始化、k3s、Prometheus、Grafana 和日志服务一步步自动化落地。'
 image: ''
 tags: ['Ansible', 'k3s', 'Prometheus', 'Grafana', 'ELK', 'DevOps', '实践记录']
 category: '编程实践'
@@ -24,65 +24,56 @@ lang: 'zh_CN'
 
 我一开始也是这个感觉。
 
-不过现在我更确定一件事：
+不过现在这个实践已经比最开始更清楚了，因为目标被收窄到了只有一台机器，也就是 `k3s` 那台服务器。
 
-> **这次实践不应该再写成“先手工全部做一遍”，而应该尽量让 Ansible 尽早接管。**
+这样反而更适合先把整条自动化路线练顺。
 
-因为如果 Ansible 只拿来装几个基础包，那它在整套任务里的价值其实并没有真正发挥出来。
+所以这篇文章，我不再按“两台机器分工”的思路写，而是直接按一台服务器的实际场景来拆：
 
-所以这篇文章，我会按一个更贴近当前目标的思路来写：
-
-- 两台机器怎么分工
+- 一台服务器能承担什么
 - Ansible 怎么组织目录
 - 哪些事情交给 Ansible
-- 怎样让 k3s、Prometheus、Grafana 也进入自动化流程
-- 日志服务怎么放到整套路线里
+- 怎样让 k3s、Prometheus、Grafana 进入自动化流程
+- 日志服务怎么作为补充落进去
 
 ## 先把目标说清楚
 
-这次实践，我不会追求把环境搭成真正的生产架构，而是追求：
+这次实践，我不会追求真正的生产架构，而是追求：
 
-**做出一套两台机器协作、并且能够重复执行的最小自动化版本。**
+**做出一套单机可运行、并且能够重复执行的最小自动化版本。**
 
 也就是说：
 
-- 本地服务器 `k3s` 负责跑 Kubernetes 实验环境
-- 公网云服务器负责承担更适合公网访问和远程管理的角色
+- `k3s` 这台机器同时承担实验环境本体
 - Ansible 负责把环境初始化、k3s、Helm、Prometheus、Grafana 这些步骤串起来
 - ELK 先按最小实验版本去落地
 
-这样做的重点不是“炫技”，而是：
+这样做的重点不是“把所有东西都堆得很大”，而是：
 
+- 先把顺序走通
+- 先把自动化思路理顺
 - 以后重做时不需要从头手敲
-- 同样的步骤可以反复执行
-- 环境结构和部署顺序能沉淀下来
 
-## 这两台机器我准备怎么分工
+## 这一台服务器我准备怎么用
 
-### 本地服务器：`k3s`
-我准备用来做：
+既然只剩下一台机器，那它就要承担这次实践里的主要角色。
+
+### `k3s` 这台机器我准备用来做
 
 - k3s 单节点集群
 - Helm 部署练习
 - Prometheus + Grafana 的 Kubernetes 内部署
-- 一部分实验性服务
+- 一部分日志服务实验
 
-### 公网云服务器：`cloud-vps`
-我准备用来做：
+这样做虽然不算“分层很漂亮”，但对当前这个阶段反而更合适。
 
-- 对外可访问的远程入口
-- 日志相关的辅助服务
-- 一部分更接近真实环境的服务练习
+因为你现在最需要的不是一套复杂分布式架构，而是：
 
-这么分工的原因很简单：
-
-- k3s 放本地更灵活
-- 公网机器不需要承受全部实验负载
-- 两台机器角色分清楚以后，Ansible 也更容易分组管理
+> **先把一条完整的自动化部署链路跑通。**
 
 ## 第一步：先把 SSH 管理理顺
 
-因为后面所有自动化都要建立在 SSH 能稳定连接的基础上，所以这一步不能省。
+后面所有自动化都要建立在 SSH 能稳定连接的基础上，所以这一步不能省。
 
 先在管理机上准备 `~/.ssh/config`：
 
@@ -91,21 +82,15 @@ Host k3s
     HostName 192.168.3.5
     User root
     IdentityFile ~/.ssh/id_ed25519
-
-Host cloud-vps
-    HostName your.server.ip
-    User root
-    IdentityFile ~/.ssh/id_ed25519
 ```
 
 然后先手工确认：
 
 ```bash
 ssh k3s hostname
-ssh cloud-vps hostname
 ```
 
-如果这一步都不顺，后面不要急着怪 Ansible，应该先把 SSH 打通。
+如果这一步不顺，后面不要急着怪 Ansible，应该先把 SSH 打通。
 
 ## 第二步：先搭一个最小的 Ansible 目录
 
@@ -115,8 +100,6 @@ ssh cloud-vps hostname
 mkdir -p ~/lab-ops/ansible/{group_vars,host_vars,playbooks}
 cd ~/lab-ops/ansible
 ```
-
-这次我不想只写一个 `bootstrap.yml` 就结束，而是准备从一开始就按后续能扩展的方式组织。
 
 目录我会先做成这样：
 
@@ -132,36 +115,28 @@ ansible/
     └── logging.yml
 ```
 
-## 第三步：把 inventory 先写清楚
+这次的目标不是把目录做得多复杂，而是让后面的自动化步骤都有地方放。
+
+## 第三步：把 inventory 写清楚
 
 ```ini
-[local]
-k3s ansible_host=192.168.3.5 ansible_user=root
-
-[cloud]
-cloud-vps ansible_host=your.server.ip ansible_user=root
-
 [k3s_nodes]
-k3s
+k3s ansible_host=192.168.3.5 ansible_user=root
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 ```
 
-这样分组以后，后面就能很自然地写：
-
-- `hosts: all`
-- `hosts: k3s_nodes`
-- `hosts: cloud`
+因为现在只有一台机器，所以 inventory 反而更简单。
 
 ## 第四步：先用 Ansible 做基础初始化
 
-先做最基础的一层，目的是把两台机器都整理到可继续自动化的状态。
+先做最基础的一层，目的是把这台机器整理到可继续自动化的状态。
 
 ### `playbooks/bootstrap.yml`
 
 ```yaml
-- hosts: all
+- hosts: k3s_nodes
   become: true
   tasks:
     - name: Update apt cache
@@ -188,7 +163,7 @@ ansible_python_interpreter=/usr/bin/python3
 ansible-playbook -i inventory.ini playbooks/bootstrap.yml
 ```
 
-这一层做完以后，两台机器至少先有一个统一起点。
+这一层做完以后，至少先有一个统一起点。
 
 ## 第五步：让 Ansible 接管 k3s 安装
 
@@ -219,6 +194,11 @@ ansible-playbook -i inventory.ini playbooks/bootstrap.yml
     - name: Show node status
       debug:
         var: k3s_nodes_result.stdout_lines
+
+    - name: Install Helm
+      shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
 ```
 
 ### 执行方式
@@ -231,30 +211,9 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 
 - 以后重装时可以重复跑
 - k3s 安装被纳入了统一流程
-- 至少已经从“手工部署”进入“可重复执行”
+- Helm 也顺手接进来了
 
-## 第六步：再让 Ansible 接管 Helm
-
-既然后面 Prometheus 和 Grafana 都要通过 Helm 安装，那 Helm 也应该进入自动化流程。
-
-可以直接接在 `k3s.yml` 里，也可以单独拆一个 playbook。
-
-例如先写进 `k3s.yml`：
-
-```yaml
-    - name: Install Helm
-      shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-      args:
-        creates: /usr/local/bin/helm
-```
-
-执行完以后，可以手工确认：
-
-```bash
-ssh k3s helm version
-```
-
-## 第七步：把 Prometheus + Grafana 也收进 Ansible
+## 第六步：把 Prometheus + Grafana 收进 Ansible
 
 如果这一步还继续手工装，那前面 Ansible 的价值就还是没有完全发挥出来。
 
@@ -309,20 +268,20 @@ ssh k3s kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
 http://127.0.0.1:3000
 ```
 
-## 第八步：日志服务怎么放进这条自动化路线
+## 第七步：日志服务怎么放进这条自动化路线
 
 ELK 这部分我还是会放到后面，因为它通常更重，也更容易拖慢节奏。
 
-但如果要让整套实践更完整，我还是会把它纳入 Ansible，而不是继续完全手工。
+既然现在只用一台机器，那这一步就更要克制，不要一上来就追求完整生产结构。
 
 ### 一个比较现实的做法
 
-先把 ELK 放到云服务器，用 Docker 做最小实验。
+先在这台机器上用 Docker 跑最小实验。
 
 ### `playbooks/logging.yml`
 
 ```yaml
-- hosts: cloud
+- hosts: k3s_nodes
   become: true
   tasks:
     - name: Install Docker
@@ -363,7 +322,7 @@ ansible-playbook -i inventory.ini playbooks/logging.yml
 
 这里我没有一上来就追求特别漂亮的 role 结构，因为现在最重要的是先把整条自动化路线跑起来。
 
-## 第九步：这一套自动化路线到底长什么样
+## 第八步：这一套自动化路线到底长什么样
 
 如果我把整件事按执行顺序排出来，大概就是：
 
@@ -386,7 +345,7 @@ ansible-playbook -i inventory.ini playbooks/logging.yml
 
 这时候你再回头看，就会发现 Ansible 已经不只是“装几个包”，而是真的在承担整套部署流程的主线角色。
 
-## 第十步：怎么验收这次实践
+## 第九步：怎么验收这次实践
 
 如果做到后面没有一个明确验收表，很容易出现一种情况：
 
@@ -399,7 +358,6 @@ ansible-playbook -i inventory.ini playbooks/logging.yml
 
 ```bash
 ssh k3s hostname
-ssh cloud-vps hostname
 ```
 
 ### Ansible 可用
@@ -427,8 +385,8 @@ Grafana 页面能访问。
 ### 日志服务正常
 
 ```bash
-ssh cloud-vps docker ps
-ssh cloud-vps curl http://127.0.0.1:9200
+ssh k3s docker ps
+ssh k3s curl http://127.0.0.1:9200
 ```
 
 至少 Elasticsearch 正常返回。
@@ -447,11 +405,13 @@ ssh cloud-vps curl http://127.0.0.1:9200
 
 ## 写在最后
 
-如果只把 Ansible 用在系统初始化，那它在这套任务里的作用其实还太保守。
+现在这个实践被收窄到只有一台服务器以后，反而更适合练自动化。
 
-更合理的做法应该是：
+因为你不用再分心考虑多机协作，也不用把注意力放在环境切换上。
 
-- 让它先接管基础环境
+更合理的做法就是：
+
+- 让 Ansible 先接管基础环境
 - 再继续接管 k3s
 - 再继续接管监控部署
 - 最后把日志服务也纳入自动化流程
@@ -460,4 +420,4 @@ ssh cloud-vps curl http://127.0.0.1:9200
 
 > **我已经开始把环境搭建过程整理成一条可以重复执行的自动化路线。**
 
-对这次实践来说，我觉得这才是更有价值的成果。
+对现在这个阶段来说，我觉得这比把架构做得很复杂更重要。
