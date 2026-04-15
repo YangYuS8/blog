@@ -2,9 +2,9 @@
 title: "我准备怎么用两台服务器做完一次运维实践任务：从环境准备到监控与日志的落地路线"
 urlSlug: '20260413-02'
 published: 2026-04-13
-description: '一篇偏实践记录风格的文章：当我手上有一台本地服务器和一台公网云服务器时，应该怎么拆解 Ansible、Terraform、k3s、Prometheus、Grafana 和 ELK 这类综合任务，以及每一步准备用什么命令落地。'
+description: '一篇偏实践记录风格的文章：当我手上有一台本地服务器和一台公网云服务器时，应该怎么拆解 Ansible、k3s、Prometheus、Grafana 和 ELK 这类综合任务，以及每一步准备用什么命令落地。'
 image: ''
-tags: ['Ansible', 'Terraform', 'k3s', 'Prometheus', 'Grafana', 'ELK', 'DevOps', '实践记录']
+tags: ['Ansible', 'k3s', 'Prometheus', 'Grafana', 'ELK', 'DevOps', '实践记录']
 category: '编程实践'
 draft: false 
 lang: 'zh_CN'
@@ -13,7 +13,6 @@ lang: 'zh_CN'
 这次要做的不是单独学一个工具，而是把一整串东西串起来：
 
 - Ansible
-- Terraform
 - k3s
 - Prometheus
 - Grafana
@@ -28,7 +27,7 @@ lang: 'zh_CN'
 不过这次和之前不一样的地方在于，我手上不是只有一台机器，而是两台：
 
 - 一台本地服务器，准备专门拿来做 `k3s` 和实验环境
-- 一台公网云服务器，适合承担对外访问、远程管理、以及一些更稳定的服务角色
+- 一台公网云服务器，适合承担对外访问、远程管理，以及一些更稳定的服务角色
 
 有了两台机器之后，这件事就不应该再按“全塞到一台机器里”的思路来做了。
 
@@ -46,7 +45,7 @@ lang: 'zh_CN'
 
 - 本地服务器 `k3s` 负责跑 Kubernetes 实验环境
 - 公网云服务器负责承担更适合公网访问和远程管理的角色
-- Ansible 和 Terraform 负责把环境管理思路理顺
+- Ansible 负责把环境初始化和批量配置理顺
 - Prometheus + Grafana 负责监控
 - ELK 负责日志
 
@@ -70,7 +69,7 @@ lang: 'zh_CN'
 - 对外可访问的远程入口
 - 后续可能的日志 / 辅助服务
 - 远程管理和控制点
-- 用来练习 Ansible / Terraform 目标管理
+- 一部分更接近真实环境的服务练习
 
 这么分工的好处是：
 
@@ -133,7 +132,7 @@ Host k3s
     IdentityFile ~/.ssh/id_ed25519
 
 Host cloud-vps
-    HostName 8.137.120.57
+    HostName your.server.ip
     User root
     IdentityFile ~/.ssh/id_ed25519
 ```
@@ -147,7 +146,7 @@ ssh cloud-vps
 
 这个小动作看起来不起眼，但后面做 Ansible 和日常操作时会顺很多。
 
-## 第三步：先把 `k3s` 这台机器清空到适合重新部署
+## 第三步：先把 `k3s` 这台机器清到适合重新部署
 
 因为 `k3s` 这台之前部署过 k3s，所以它不是一张白纸。
 
@@ -187,7 +186,7 @@ cd ~/lab-ops/ansible
 k3s ansible_host=192.168.3.5 ansible_user=root
 
 [cloud]
-cloud-vps ansible_host=8.137.120.57 ansible_user=root
+cloud-vps ansible_host=your.server.ip ansible_user=root
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
@@ -228,46 +227,7 @@ ansible-playbook -i inventory.ini bootstrap.yml
 - 两台机器环境尽量一致
 - 我不用手工反复点来点去
 
-## 第五步：Terraform 在这次任务里怎么放
-
-如果我要老实说，这次 Terraform 不是最核心的落地点。
-
-因为这两台机器已经都准备好了，不是从 0 创建云资源。
-
-所以这次更现实的做法是：
-
-- 用 Terraform 体现基础设施代码化思路
-- 至少做出一个结构清晰的最小项目
-
-例如：
-
-```text
-terraform/
-├── provider.tf
-├── variables.tf
-├── main.tf
-└── outputs.tf
-```
-
-### 最小示意可以先这样
-
-```hcl
-terraform {
-  required_version = ">= 1.5.0"
-}
-
-variable "cloud_server_ip" {
-  type = string
-}
-
-output "cloud_server_ip" {
-  value = var.cloud_server_ip
-}
-```
-
-这一层先别追求太满，先把“IaC 思路”体现出来。
-
-## 第六步：在 `k3s` 机器上重新部署 k3s
+## 第五步：在 `k3s` 机器上重新部署 k3s
 
 既然这台机器就是为 k3s 准备的，那这里直接上。
 
@@ -289,7 +249,7 @@ kubectl get pods -A
 
 如果 `kubectl get nodes` 里节点是 `Ready`，那说明这一层已经打底成功了。
 
-## 第七步：在 k3s 上部署 Helm
+## 第六步：在 k3s 上部署 Helm
 
 Helm 几乎是后面装监控和日志时最顺手的方式。
 
@@ -300,7 +260,7 @@ helm version
 
 这一步很简单，但后面能省很多事。
 
-## 第八步：在 k3s 上部署 Prometheus + Grafana
+## 第七步：在 k3s 上部署 Prometheus + Grafana
 
 这部分我会优先做，因为它最容易形成一个可验证成果。
 
@@ -331,9 +291,9 @@ kubectl get pods -n monitoring
 
 如果 Pod 比较多，不要一上来就慌。先看：
 
-- 是不是 ImagePullBackOff
+- 是不是 `ImagePullBackOff`
 - 是不是资源不够
-- 是不是 Pending
+- 是不是 `Pending`
 
 ### 进一步排错
 
@@ -342,7 +302,7 @@ kubectl describe pod <pod-name> -n monitoring
 kubectl logs <pod-name> -n monitoring
 ```
 
-## 第九步：把 Grafana 页面访问出来
+## 第八步：把 Grafana 页面访问出来
 
 对我来说，监控这一步算不算真正落地，很大程度取决于：
 
@@ -362,7 +322,7 @@ http://127.0.0.1:3000
 
 如果只是练习，先这样就够了。
 
-## 第十步：ELK 我会最后做
+## 第九步：ELK 我会最后做
 
 这不是因为它不重要，而是因为它通常最重、最容易拖慢进度。
 
@@ -393,7 +353,7 @@ docker run -d --name elasticsearch \
 ```bash
 docker run -d --name kibana \
   -p 5601:5601 \
-  -e ELASTICSEARCH_HOSTS=http://8.137.120.57:9200 \
+  -e ELASTICSEARCH_HOSTS=http://your.server.ip:9200 \
   docker.elastic.co/kibana/kibana:8.13.4
 ```
 
@@ -408,12 +368,12 @@ curl http://127.0.0.1:9200
 浏览器访问：
 
 ```text
-http://8.137.120.57:5601
+http://your.server.ip:5601
 ```
 
 对这次实践来说，我会先把 ELK 做到“最小可见成果”就行，不会让它一上来把整套任务节奏拖死。
 
-## 第十一步：怎么验收这次实践
+## 第十步：怎么验收这次实践
 
 做到后面，很容易出现一种情况：
 
@@ -439,16 +399,6 @@ ansible-playbook -i inventory.ini bootstrap.yml
 ```
 
 至少能成功跑一次。
-
-### Terraform
-
-```bash
-terraform init
-terraform validate
-terraform plan
-```
-
-至少结构和语法是过的。
 
 ### k3s
 
@@ -510,6 +460,6 @@ curl http://127.0.0.1:9200
 
 我现在更倾向于把它理解成：
 
-> **不是一次学会六七个工具，而是练习怎么把一组工具按正确顺序落地。**
+> **不是一次学会五六个工具，而是练习怎么把一组工具按正确顺序落地。**
 
 只要这条顺序走顺了，整件事就不会显得那么吓人。
