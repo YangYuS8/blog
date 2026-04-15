@@ -2,7 +2,7 @@
 title: "我准备怎么用两台服务器做完一次运维实践任务：从环境准备到监控与日志的落地路线"
 urlSlug: '20260413-02'
 published: 2026-04-13
-description: '一篇偏实践记录风格的文章：当我手上有一台本地服务器和一台公网云服务器时，应该怎么拆解 Ansible、k3s、Prometheus、Grafana 和 ELK 这类综合任务，以及每一步准备用什么命令落地。'
+description: '一篇偏实践记录风格的文章：当我手上有一台本地服务器和一台公网云服务器时，怎样以 Ansible 为主线，把环境初始化、k3s、Prometheus、Grafana 和日志服务一步步自动化落地。'
 image: ''
 tags: ['Ansible', 'k3s', 'Prometheus', 'Grafana', 'ELK', 'DevOps', '实践记录']
 category: '编程实践'
@@ -24,41 +24,45 @@ lang: 'zh_CN'
 
 我一开始也是这个感觉。
 
-不过这次和之前不一样的地方在于，我手上不是只有一台机器，而是两台：
+不过现在我更确定一件事：
 
-- 一台本地服务器，准备专门拿来做 `k3s` 和实验环境
-- 一台公网云服务器，适合承担对外访问、远程管理，以及一些更稳定的服务角色
+> **这次实践不应该再写成“先手工全部做一遍”，而应该尽量让 Ansible 尽早接管。**
 
-有了两台机器之后，这件事就不应该再按“全塞到一台机器里”的思路来做了。
+因为如果 Ansible 只拿来装几个基础包，那它在整套任务里的价值其实并没有真正发挥出来。
 
-所以这篇文章，我不打算写成那种“概念解释型教程”，而是更像一份我自己的实践路线记录：
+所以这篇文章，我会按一个更贴近当前目标的思路来写：
 
-> **如果让我现在从零做完这次任务，我准备怎么拆、每一步先做什么、命令又该怎么下。**
+- 两台机器怎么分工
+- Ansible 怎么组织目录
+- 哪些事情交给 Ansible
+- 怎样让 k3s、Prometheus、Grafana 也进入自动化流程
+- 日志服务怎么放到整套路线里
 
 ## 先把目标说清楚
 
-这次实践，我不会追求把环境搭成真正的生产架构，而是会追求：
+这次实践，我不会追求把环境搭成真正的生产架构，而是追求：
 
-**做出一套两台机器协作的最小可运行版本。**
+**做出一套两台机器协作、并且能够重复执行的最小自动化版本。**
 
 也就是说：
 
 - 本地服务器 `k3s` 负责跑 Kubernetes 实验环境
 - 公网云服务器负责承担更适合公网访问和远程管理的角色
-- Ansible 负责把环境初始化和批量配置理顺
-- Prometheus + Grafana 负责监控
-- ELK 负责日志
+- Ansible 负责把环境初始化、k3s、Helm、Prometheus、Grafana 这些步骤串起来
+- ELK 先按最小实验版本去落地
 
-这样拆，比什么都塞在一台小机器里合理得多。
+这样做的重点不是“炫技”，而是：
+
+- 以后重做时不需要从头手敲
+- 同样的步骤可以反复执行
+- 环境结构和部署顺序能沉淀下来
 
 ## 这两台机器我准备怎么分工
-
-先把角色定清楚，后面做事才不会乱。
 
 ### 本地服务器：`k3s`
 我准备用来做：
 
-- k3s 集群本体（先单节点）
+- k3s 单节点集群
 - Helm 部署练习
 - Prometheus + Grafana 的 Kubernetes 内部署
 - 一部分实验性服务
@@ -67,63 +71,20 @@ lang: 'zh_CN'
 我准备用来做：
 
 - 对外可访问的远程入口
-- 后续可能的日志 / 辅助服务
-- 远程管理和控制点
+- 日志相关的辅助服务
 - 一部分更接近真实环境的服务练习
 
-这么分工的好处是：
+这么分工的原因很简单：
 
-- k3s 跑在本地更灵活
+- k3s 放本地更灵活
 - 公网机器不需要承受全部实验负载
-- 角色更清楚，也更接近真实环境
+- 两台机器角色分清楚以后，Ansible 也更容易分组管理
 
-## 第一步：先把两台机器的基础环境确认好
+## 第一步：先把 SSH 管理理顺
 
-一开始不要急着装 k3s，也不要急着装 ELK。
+因为后面所有自动化都要建立在 SSH 能稳定连接的基础上，所以这一步不能省。
 
-先确认机器是不是在一个可管理状态里。
-
-### 在两台机器上都先跑一遍这些命令
-
-```bash
-hostnamectl
-uname -a
-cat /etc/os-release
-free -h
-df -h
-ip a
-```
-
-我想先知道：
-
-- 系统版本
-- 内存大概多少
-- 磁盘空间够不够
-- 网络接口情况
-
-因为后面无论是 k3s、Grafana 还是 ELK，最后都会回到资源问题。
-
-### 然后更新系统
-
-如果是 Debian / Ubuntu：
-
-```bash
-apt update && apt upgrade -y
-```
-
-### 安装最基础的工具
-
-```bash
-apt install -y curl wget git vim htop unzip ca-certificates gnupg lsb-release jq
-```
-
-这一层如果不先整理好，后面每一步都会显得很别扭。
-
-## 第二步：先把 SSH 管理体验理顺
-
-因为这次是两台机器配合，我会先把 SSH 这层整理好。
-
-例如本地管理机上准备 `~/.ssh/config`：
+先在管理机上准备 `~/.ssh/config`：
 
 ```text
 Host k3s
@@ -137,49 +98,41 @@ Host cloud-vps
     IdentityFile ~/.ssh/id_ed25519
 ```
 
-之后我就可以直接：
+然后先手工确认：
 
 ```bash
-ssh k3s
-ssh cloud-vps
+ssh k3s hostname
+ssh cloud-vps hostname
 ```
 
-这个小动作看起来不起眼，但后面做 Ansible 和日常操作时会顺很多。
+如果这一步都不顺，后面不要急着怪 Ansible，应该先把 SSH 打通。
 
-## 第三步：先把 `k3s` 这台机器清到适合重新部署
+## 第二步：先搭一个最小的 Ansible 目录
 
-因为 `k3s` 这台之前部署过 k3s，所以它不是一张白纸。
-
-这种情况下，第一件事不是继续装，而是先确认旧环境已经清掉。
-
-我现在会重点检查：
+我会先建一个自己的工作目录：
 
 ```bash
-systemctl status k3s --no-pager || true
-command -v k3s || true
-command -v kubectl || true
-ip link show cni0 2>/dev/null || true
-ip link show flannel.1 2>/dev/null || true
-iptables -S | grep -E "KUBE-|CNI-|flannel" || true
-iptables -t nat -S | grep -E "KUBE-|CNI-|flannel" || true
-```
-
-如果这些都没有明显残留，那我就把它当成已经回到了“可重新部署”的状态。
-
-## 第四步：用 Ansible 接管这两台机器
-
-这一步我不想再手工来回配两遍。
-
-既然任务里明确提到了 Ansible，那我会让它尽早上场。
-
-### 我会先建一个最小目录
-
-```bash
-mkdir -p ~/lab-ops/ansible
+mkdir -p ~/lab-ops/ansible/{group_vars,host_vars,playbooks}
 cd ~/lab-ops/ansible
 ```
 
-### inventory 先这样写
+这次我不想只写一个 `bootstrap.yml` 就结束，而是准备从一开始就按后续能扩展的方式组织。
+
+目录我会先做成这样：
+
+```text
+ansible/
+├── inventory.ini
+├── group_vars/
+├── host_vars/
+└── playbooks/
+    ├── bootstrap.yml
+    ├── k3s.yml
+    ├── monitoring.yml
+    └── logging.yml
+```
+
+## 第三步：把 inventory 先写清楚
 
 ```ini
 [local]
@@ -188,11 +141,24 @@ k3s ansible_host=192.168.3.5 ansible_user=root
 [cloud]
 cloud-vps ansible_host=your.server.ip ansible_user=root
 
+[k3s_nodes]
+k3s
+
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 ```
 
-### 先来一个最小 playbook
+这样分组以后，后面就能很自然地写：
+
+- `hosts: all`
+- `hosts: k3s_nodes`
+- `hosts: cloud`
+
+## 第四步：先用 Ansible 做基础初始化
+
+先做最基础的一层，目的是把两台机器都整理到可继续自动化的状态。
+
+### `playbooks/bootstrap.yml`
 
 ```yaml
 - hosts: all
@@ -212,254 +178,286 @@ ansible_python_interpreter=/usr/bin/python3
           - htop
           - unzip
           - jq
+          - ca-certificates
         state: present
 ```
 
-### 跑法
+### 执行方式
 
 ```bash
-ansible-playbook -i inventory.ini bootstrap.yml
+ansible-playbook -i inventory.ini playbooks/bootstrap.yml
 ```
 
-这一步对我来说，重点不是“炫技”，而是：
+这一层做完以后，两台机器至少先有一个统一起点。
 
-- 后面重复执行不会乱
-- 两台机器环境尽量一致
-- 我不用手工反复点来点去
+## 第五步：让 Ansible 接管 k3s 安装
 
-## 第五步：在 `k3s` 机器上重新部署 k3s
+这一步开始，Ansible 就不只是“初始化工具”了。
 
-既然这台机器就是为 k3s 准备的，那这里直接上。
+### `playbooks/k3s.yml`
 
-### 安装命令
+```yaml
+- hosts: k3s_nodes
+  become: true
+  tasks:
+    - name: Install k3s
+      shell: curl -sfL https://get.k3s.io | sh -
+      args:
+        creates: /usr/local/bin/k3s
+
+    - name: Ensure k3s service is enabled
+      service:
+        name: k3s
+        state: started
+        enabled: true
+
+    - name: Check node status
+      shell: kubectl get nodes
+      register: k3s_nodes_result
+      changed_when: false
+
+    - name: Show node status
+      debug:
+        var: k3s_nodes_result.stdout_lines
+```
+
+### 执行方式
 
 ```bash
-curl -sfL https://get.k3s.io | sh -
+ansible-playbook -i inventory.ini playbooks/k3s.yml
 ```
 
-### 安装后先看状态
+这里的重点不是把 `curl | sh` 包了一层，而是：
+
+- 以后重装时可以重复跑
+- k3s 安装被纳入了统一流程
+- 至少已经从“手工部署”进入“可重复执行”
+
+## 第六步：再让 Ansible 接管 Helm
+
+既然后面 Prometheus 和 Grafana 都要通过 Helm 安装，那 Helm 也应该进入自动化流程。
+
+可以直接接在 `k3s.yml` 里，也可以单独拆一个 playbook。
+
+例如先写进 `k3s.yml`：
+
+```yaml
+    - name: Install Helm
+      shell: curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+```
+
+执行完以后，可以手工确认：
 
 ```bash
-systemctl status k3s --no-pager
-kubectl get nodes
-kubectl get pods -A
+ssh k3s helm version
 ```
 
-我会先看这三个命令的结果，再决定下一步。
+## 第七步：把 Prometheus + Grafana 也收进 Ansible
 
-如果 `kubectl get nodes` 里节点是 `Ready`，那说明这一层已经打底成功了。
+如果这一步还继续手工装，那前面 Ansible 的价值就还是没有完全发挥出来。
 
-## 第六步：在 k3s 上部署 Helm
+所以我会直接把监控也写成 playbook。
 
-Helm 几乎是后面装监控和日志时最顺手的方式。
+### `playbooks/monitoring.yml`
+
+```yaml
+- hosts: k3s_nodes
+  become: true
+  tasks:
+    - name: Add Prometheus Helm repo
+      shell: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+      changed_when: false
+
+    - name: Update Helm repos
+      shell: helm repo update
+      changed_when: false
+
+    - name: Create monitoring namespace
+      shell: kubectl create namespace monitoring
+      register: monitoring_ns
+      failed_when: monitoring_ns.rc != 0 and 'already exists' not in monitoring_ns.stderr
+      changed_when: "'created' in monitoring_ns.stdout"
+
+    - name: Install kube-prometheus-stack
+      shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+```
+
+### 执行方式
 
 ```bash
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-helm version
+ansible-playbook -i inventory.ini playbooks/monitoring.yml
 ```
 
-这一步很简单，但后面能省很多事。
-
-## 第七步：在 k3s 上部署 Prometheus + Grafana
-
-这部分我会优先做，因为它最容易形成一个可验证成果。
-
-### 添加仓库
+### 部署后怎么确认
 
 ```bash
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
+ssh k3s kubectl get pods -n monitoring
+ssh k3s kubectl get svc -n monitoring
 ```
 
-### 创建命名空间
+如果只是临时访问 Grafana，依然可以端口转发：
 
 ```bash
-kubectl create namespace monitoring
+ssh k3s kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
 ```
 
-### 安装 kube-prometheus-stack
-
-```bash
-helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring
-```
-
-### 查看 Pod 状态
-
-```bash
-kubectl get pods -n monitoring
-```
-
-如果 Pod 比较多，不要一上来就慌。先看：
-
-- 是不是 `ImagePullBackOff`
-- 是不是资源不够
-- 是不是 `Pending`
-
-### 进一步排错
-
-```bash
-kubectl describe pod <pod-name> -n monitoring
-kubectl logs <pod-name> -n monitoring
-```
-
-## 第八步：把 Grafana 页面访问出来
-
-对我来说，监控这一步算不算真正落地，很大程度取决于：
-
-**我能不能真的把 Grafana 页面打开。**
-
-最简单的临时方式通常是端口转发：
-
-```bash
-kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
-```
-
-然后本地浏览器访问：
+浏览器访问：
 
 ```text
 http://127.0.0.1:3000
 ```
 
-如果只是练习，先这样就够了。
+## 第八步：日志服务怎么放进这条自动化路线
 
-## 第九步：ELK 我会最后做
+ELK 这部分我还是会放到后面，因为它通常更重，也更容易拖慢节奏。
 
-这不是因为它不重要，而是因为它通常最重、最容易拖慢进度。
+但如果要让整套实践更完整，我还是会把它纳入 Ansible，而不是继续完全手工。
 
-### 这次我会怎么定目标
+### 一个比较现实的做法
 
-我不会一上来就追求一套很完整、很漂亮的 ELK 生产结构。
+先把 ELK 放到云服务器，用 Docker 做最小实验。
 
-我更现实的目标会是：
+### `playbooks/logging.yml`
 
-- 先把 Elasticsearch 跑起来
-- 再把 Kibana 跑起来
-- 最后确认至少能看到一条日志
+```yaml
+- hosts: cloud
+  become: true
+  tasks:
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: true
 
-### 如果用 Docker 先做最小实验
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: true
 
-例如在公网机器上先单独跑：
+    - name: Run Elasticsearch container
+      shell: |
+        docker rm -f elasticsearch || true
+        docker run -d --name elasticsearch \
+          -p 9200:9200 \
+          -e discovery.type=single-node \
+          -e xpack.security.enabled=false \
+          docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+
+    - name: Run Kibana container
+      shell: |
+        docker rm -f kibana || true
+        docker run -d --name kibana \
+          -p 5601:5601 \
+          -e ELASTICSEARCH_HOSTS=http://127.0.0.1:9200 \
+          docker.elastic.co/kibana/kibana:8.13.4
+```
+
+### 执行方式
 
 ```bash
-docker run -d --name elasticsearch \
-  -p 9200:9200 \
-  -e discovery.type=single-node \
-  -e xpack.security.enabled=false \
-  docker.elastic.co/elasticsearch/elasticsearch:8.13.4
+ansible-playbook -i inventory.ini playbooks/logging.yml
 ```
 
-然后再跑 Kibana：
+这里我没有一上来就追求特别漂亮的 role 结构，因为现在最重要的是先把整条自动化路线跑起来。
+
+## 第九步：这一套自动化路线到底长什么样
+
+如果我把整件事按执行顺序排出来，大概就是：
 
 ```bash
-docker run -d --name kibana \
-  -p 5601:5601 \
-  -e ELASTICSEARCH_HOSTS=http://your.server.ip:9200 \
-  docker.elastic.co/kibana/kibana:8.13.4
+cd ~/lab-ops/ansible
+
+ansible-playbook -i inventory.ini playbooks/bootstrap.yml
+ansible-playbook -i inventory.ini playbooks/k3s.yml
+ansible-playbook -i inventory.ini playbooks/monitoring.yml
+ansible-playbook -i inventory.ini playbooks/logging.yml
 ```
 
-### 先验证 Elasticsearch
+这四步跑完以后，整套环境至少会比较接近：
 
-```bash
-curl http://127.0.0.1:9200
-```
+- 基础环境已经初始化
+- k3s 已经部署
+- Helm 已经安装
+- Prometheus + Grafana 已经落地
+- ELK 最小实验已经跑起来
 
-### 再验证 Kibana
-
-浏览器访问：
-
-```text
-http://your.server.ip:5601
-```
-
-对这次实践来说，我会先把 ELK 做到“最小可见成果”就行，不会让它一上来把整套任务节奏拖死。
+这时候你再回头看，就会发现 Ansible 已经不只是“装几个包”，而是真的在承担整套部署流程的主线角色。
 
 ## 第十步：怎么验收这次实践
 
-做到后面，很容易出现一种情况：
+如果做到后面没有一个明确验收表，很容易出现一种情况：
 
-- 每个东西好像都装了一点
+- 每个步骤都做了一点
 - 但自己也说不清到底算不算完成
 
-所以我会明确给自己列验收项。
+所以我会给自己列最小验收项。
 
-### 基础环境
+### 基础连接
 
 ```bash
-ssh k3s
-ssh cloud-vps
+ssh k3s hostname
+ssh cloud-vps hostname
 ```
 
-都正常。
-
-### Ansible
+### Ansible 可用
 
 ```bash
 ansible all -i inventory.ini -m ping
-ansible-playbook -i inventory.ini bootstrap.yml
 ```
 
-至少能成功跑一次。
-
-### k3s
+### k3s 正常
 
 ```bash
-kubectl get nodes
-kubectl get pods -A
+ssh k3s kubectl get nodes
+ssh k3s kubectl get pods -A
 ```
 
-能看到节点 ready。
-
-### Prometheus + Grafana
+### 监控正常
 
 ```bash
-kubectl get pods -n monitoring
-kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
+ssh k3s kubectl get pods -n monitoring
+ssh k3s kubectl get svc -n monitoring
 ```
 
-Grafana 页面能打开。
+Grafana 页面能访问。
 
-### ELK
+### 日志服务正常
 
 ```bash
-docker ps
-curl http://127.0.0.1:9200
+ssh cloud-vps docker ps
+ssh cloud-vps curl http://127.0.0.1:9200
 ```
 
-至少 Elasticsearch 正常，Kibana 页面能开。
+至少 Elasticsearch 正常返回。
 
-## 这次实践里，我最不想踩的坑
+## 这次实践里，我现在更在意的事
 
-如果按我自己的习惯，我会刻意避开这几个坑：
+如果按现在这个思路，我更在意的已经不是“我会不会手动装这些东西”，而是：
 
-### 1）一开始就想把所有东西都做成生产级
+### 1）我能不能把部署顺序理清楚
 
-没必要。
+### 2）我能不能把关键步骤收进 Ansible
 
-这次更重要的是闭环，不是完美。
+### 3）我下次重做时，是不是还能复现出来
 
-### 2）把 ELK 放得太早
-
-它太重，放前面很容易把节奏拖垮。
-
-### 3）没先把 SSH 和基础环境理顺
-
-一旦基础环境乱，后面所有工具都只是在放大混乱。
+这三件事比“第一次是否完全手敲成功”更重要。
 
 ## 写在最后
 
-这次任务如果只看工具列表，确实会让人一开始有点发怵。
+如果只把 Ansible 用在系统初始化，那它在这套任务里的作用其实还太保守。
 
-但如果真的拆开以后，其实会发现最重要的事情没有那么多：
+更合理的做法应该是：
 
-- 先把两台机器角色分清楚
-- 先把基础环境和 SSH 管理理顺
-- 再用 Ansible 接管初始化
-- 再上 k3s
-- 再做监控
-- 最后补日志
+- 让它先接管基础环境
+- 再继续接管 k3s
+- 再继续接管监控部署
+- 最后把日志服务也纳入自动化流程
 
-我现在更倾向于把它理解成：
+这样整件事才会真正从“我会手动搭环境”，变成：
 
-> **不是一次学会五六个工具，而是练习怎么把一组工具按正确顺序落地。**
+> **我已经开始把环境搭建过程整理成一条可以重复执行的自动化路线。**
 
-只要这条顺序走顺了，整件事就不会显得那么吓人。
+对这次实践来说，我觉得这才是更有价值的成果。
