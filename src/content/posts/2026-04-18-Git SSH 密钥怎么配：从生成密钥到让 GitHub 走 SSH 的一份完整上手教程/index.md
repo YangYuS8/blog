@@ -411,7 +411,50 @@ ssh-add -l
 
 可以。GitHub 官方也支持通过 `gh` 来处理 SSH key。
 
-不过从“第一次配置”的角度来说，我觉得网页路径对大多数人还是更直观：
+如果你已经登录过 GitHub CLI，那么这一步其实会更方便一些。
+
+### 先确认 gh 已登录
+
+```bash
+gh auth status
+```
+
+如果还没登录，可以先执行：
+
+```bash
+gh auth login
+```
+
+### 用 gh 直接添加 SSH 公钥
+
+如果你使用的是默认公钥文件：
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "My Laptop"
+```
+
+如果你的 key 文件名不是默认的，就把路径换成你自己的 `.pub` 文件。
+
+这个命令做的事情，本质上和你手工去 GitHub 网页：
+
+- 打开 `Settings`
+- 进入 `SSH and GPG keys`
+- 点击 `New SSH key`
+- 粘贴公钥
+
+是一样的，只不过现在变成了命令行完成。
+
+### 怎么确认是不是已经加上了
+
+加完以后，你还是可以继续用这条命令测试：
+
+```bash
+ssh -T git@github.com
+```
+
+如果认证成功，说明这把 key 已经能正常给 GitHub 用了。
+
+不过从“第一次配置”的角度来说，我还是觉得网页路径对很多人更直观：
 
 - 先生成 key
 - 复制公钥
