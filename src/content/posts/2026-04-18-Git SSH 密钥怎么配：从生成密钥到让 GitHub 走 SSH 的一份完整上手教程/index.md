@@ -444,6 +444,41 @@ gh ssh-key add ~/.ssh/id_ed25519.pub --title "My Laptop"
 
 是一样的，只不过现在变成了命令行完成。
 
+### 如果这里报权限不够怎么办
+
+实际操作时，有一种情况挺常见：
+
+你明明已经登录了 `gh`，但执行：
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "My Laptop"
+```
+
+还是可能报类似这样的提示：
+
+```text
+This API operation needs the "admin:public_key" scope.
+To request it, run: gh auth refresh -h github.com -s admin:public_key
+```
+
+这通常不是 SSH key 本身有问题，而是：
+
+> **你当前 GitHub CLI 登录使用的 token 权限不够，缺少管理 SSH 公钥所需的 scope。**
+
+这时候按提示补授权就行：
+
+```bash
+gh auth refresh -h github.com -s admin:public_key
+```
+
+完成授权以后，再重新执行：
+
+```bash
+gh ssh-key add ~/.ssh/id_ed25519.pub --title "My Laptop"
+```
+
+一般就能成功。
+
 ### 怎么确认是不是已经加上了
 
 加完以后，你还是可以继续用这条命令测试：
