@@ -186,8 +186,17 @@ ansible-playbook -i inventory.ini playbooks/bootstrap.yml
         state: started
         enabled: true
 
+    - name: Create kubectl symlink
+      file:
+        src: /usr/local/bin/k3s
+        dest: /usr/local/bin/kubectl
+        state: link
+        force: true
+
     - name: Check node status
       shell: kubectl get nodes
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
       register: k3s_nodes_result
       changed_when: false
 
@@ -227,7 +236,9 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
   tasks:
     - name: Add Prometheus Helm repo
       shell: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-      changed_when: false
+      register: helm_repo_add
+      failed_when: helm_repo_add.rc != 0 and 'already exists' not in helm_repo_add.stderr
+      changed_when: "'has been added' in helm_repo_add.stdout"
 
     - name: Update Helm repos
       shell: helm repo update
@@ -235,12 +246,16 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 
     - name: Create monitoring namespace
       shell: kubectl create namespace monitoring
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
       register: monitoring_ns
       failed_when: monitoring_ns.rc != 0 and 'already exists' not in monitoring_ns.stderr
       changed_when: "'created' in monitoring_ns.stdout"
 
     - name: Install kube-prometheus-stack
-      shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring
+      shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 ```
 
 ### 执行方式
@@ -249,17 +264,37 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 ansible-playbook -i inventory.ini playbooks/monitoring.yml
 ```
 
+如果你按我前一版文章里的写法直接执行后报错，最常见的原因其实有两个：
+
+- **`kubectl` 没有在 root 的 PATH 里**，因为 k3s 默认更常见的调用方式其实是 `k3s kubectl`
+- **Ansible 任务里没有显式指定 `KUBECONFIG`**，导致 `kubectl` 或 `helm` 找不到集群连接信息
+
+前一版这里我写得不够严谨，这里纠正一下：
+
+- 要么先像上面那样创建 `/usr/local/bin/kubectl` 到 `k3s` 的软链接
+- 要么在命令里直接写 `k3s kubectl`
+- 同时最好显式指定 `KUBECONFIG=/etc/rancher/k3s/k3s.yaml`
+
+如果你的报错内容类似：
+
+- `kubectl: command not found`
+- `Kubernetes cluster unreachable`
+- `connection refused`
+- `no configuration has been provided`
+
+大概率就是这个问题。
+
 ### 部署后怎么确认
 
 ```bash
-ssh k3s kubectl get pods -n monitoring
-ssh k3s kubectl get svc -n monitoring
+ssh k3s sudo kubectl get pods -n monitoring
+ssh k3s sudo kubectl get svc -n monitoring
 ```
 
 如果只是临时访问 Grafana，依然可以端口转发：
 
 ```bash
-ssh k3s kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
+ssh k3s sudo kubectl port-forward svc/monitoring-grafana -n monitoring 3000:80
 ```
 
 浏览器访问：
