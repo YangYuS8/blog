@@ -261,8 +261,18 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
       failed_when: monitoring_ns.rc != 0 and 'already exists' not in monitoring_ns.stderr
       changed_when: "'created' in monitoring_ns.stdout"
 
+    - name: Write monitoring values
+      copy:
+        dest: /root/monitoring-values.yaml
+        mode: '0644'
+        content: |
+          grafana:
+            service:
+              type: NodePort
+              nodePort: 30080
+
     - name: Install kube-prometheus-stack
-      shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
+      shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace -f /root/monitoring-values.yaml
 ```
 
 ### 执行方式
@@ -278,13 +288,16 @@ ansible-playbook -i inventory.ini playbooks/monitoring.yml
 - `HTTPS_PROXY`
 - `NO_PROXY`
 
+同时，如果后面准备让外部机器通过 Tailscale 或反向代理访问 Grafana，我也更建议直接把 Grafana 的 service 形式写进 Helm values，而不是装完以后再临时手工 patch。
+
 这样做的好处是：
 
 - Helm 访问仓库时有稳定的网络出口
 - kubectl 与 Helm 都能直接找到 k3s 集群
 - 以后重跑 playbook 时不依赖当前 shell 是否手工 export 过环境变量
+- Grafana 暴露方式可以跟着 release 一起管理，不会在重装后丢失
 
-如果你的代理地址和网段跟这里不同，就把示例里的值替换成你自己的实际环境。
+如果你的代理地址、网段或者 NodePort 端口号跟这里不同，就把示例里的值替换成你自己的实际环境。
 
 ### 部署后怎么确认
 
