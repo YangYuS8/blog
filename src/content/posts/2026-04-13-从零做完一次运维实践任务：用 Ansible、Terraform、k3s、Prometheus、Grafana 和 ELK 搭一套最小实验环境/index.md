@@ -233,6 +233,11 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 ```yaml
 - hosts: k3s_nodes
   become: true
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+    HTTP_PROXY: http://192.168.3.14:7890/
+    HTTPS_PROXY: http://192.168.3.14:7890/
+    NO_PROXY: 127.0.0.1,localhost,10.42.0.0/16,10.43.0.0/16,10.0.0.0/8,192.168.0.0/16
   tasks:
     - name: Add Prometheus Helm repo
       shell: helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -240,22 +245,24 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
       failed_when: helm_repo_add.rc != 0 and 'already exists' not in helm_repo_add.stderr
       changed_when: "'has been added' in helm_repo_add.stdout"
 
+    - name: Add Grafana Helm repo
+      shell: helm repo add grafana https://grafana.github.io/helm-charts
+      register: grafana_repo_add
+      failed_when: grafana_repo_add.rc != 0 and 'already exists' not in grafana_repo_add.stderr
+      changed_when: "'has been added' in grafana_repo_add.stdout"
+
     - name: Update Helm repos
       shell: helm repo update
       changed_when: false
 
     - name: Create monitoring namespace
       shell: kubectl create namespace monitoring
-      environment:
-        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
       register: monitoring_ns
       failed_when: monitoring_ns.rc != 0 and 'already exists' not in monitoring_ns.stderr
       changed_when: "'created' in monitoring_ns.stdout"
 
     - name: Install kube-prometheus-stack
       shell: helm upgrade --install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace
-      environment:
-        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 ```
 
 ### 执行方式
@@ -264,25 +271,20 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 ansible-playbook -i inventory.ini playbooks/monitoring.yml
 ```
 
-如果你按我前一版文章里的写法直接执行后报错，最常见的原因其实有两个：
+这一层里我更倾向于把和监控部署直接相关的环境一起放进 playbook，例如：
 
-- **`kubectl` 没有在 root 的 PATH 里**，因为 k3s 默认更常见的调用方式其实是 `k3s kubectl`
-- **Ansible 任务里没有显式指定 `KUBECONFIG`**，导致 `kubectl` 或 `helm` 找不到集群连接信息
+- `KUBECONFIG`
+- `HTTP_PROXY`
+- `HTTPS_PROXY`
+- `NO_PROXY`
 
-前一版这里我写得不够严谨，这里纠正一下：
+这样做的好处是：
 
-- 要么先像上面那样创建 `/usr/local/bin/kubectl` 到 `k3s` 的软链接
-- 要么在命令里直接写 `k3s kubectl`
-- 同时最好显式指定 `KUBECONFIG=/etc/rancher/k3s/k3s.yaml`
+- Helm 访问仓库时有稳定的网络出口
+- kubectl 与 Helm 都能直接找到 k3s 集群
+- 以后重跑 playbook 时不依赖当前 shell 是否手工 export 过环境变量
 
-如果你的报错内容类似：
-
-- `kubectl: command not found`
-- `Kubernetes cluster unreachable`
-- `connection refused`
-- `no configuration has been provided`
-
-大概率就是这个问题。
+如果你的代理地址和网段跟这里不同，就把示例里的值替换成你自己的实际环境。
 
 ### 部署后怎么确认
 
