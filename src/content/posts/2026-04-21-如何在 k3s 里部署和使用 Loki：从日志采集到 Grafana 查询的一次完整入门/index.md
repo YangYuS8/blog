@@ -1,342 +1,484 @@
 ---
-title: "如何在 k3s 里部署和使用 Loki：从日志采集到 Grafana 查询的一次完整入门"
+title: "如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践"
 urlSlug: '20260421-02'
 published: 2026-04-21
-description: '面向单机 k3s 学习场景，讲解 Loki 的基本结构、为什么它适合作为 Kubernetes 日志系统的入门路线，以及在 k3s 中部署 Loki、接入日志采集、在 Grafana 中查询日志时需要关注的关键点。'
+description: '基于 Grafana 官方当前路线，在单机 k3s 中用 Helm 部署 Loki，并用 Grafana Alloy 代替已停止更新的 Promtail 完成日志采集，最后在 Grafana 中查询 Pod 日志。'
 image: ''
-tags: ['Loki', 'Grafana', 'Promtail', 'Kubernetes', 'k3s', '日志', 'DevOps']
-category: '软件教程'
+tags: ['Loki', 'Grafana', 'Grafana Alloy', 'Kubernetes', 'k3s', '日志', 'Helm', '实战']
+category: '编程实践'
 draft: false 
 lang: 'zh_CN'
 ---
 
-如果目标是学习 Kubernetes / k3s 里的日志系统，Loki 是一条很值得尽早上手的路线。
+这次直接按 `k3s` 实战来讲 Loki，不再绕概念。
 
-原因不复杂：
+目标很明确：
 
-- 它比 Elasticsearch 路线更轻一些
-- 它和 Grafana 体系衔接自然
-- 它很适合先把“日志采集 → 存储 → 查询”这条链路跑通
+- 在单机 `k3s` 里部署 `Loki`
+- 用官方当前更推荐的 `Grafana Alloy` 做日志采集
+- 把 Pod 日志送进 Loki
+- 最后在 `Grafana` 里查到日志
 
-这篇文章只讲一件事：
+这篇用的是目前更贴近官方文档的思路，而不是继续用已经逐步退出主线的 `Promtail`。
 
-> **在 k3s 里，Loki 这套东西到底应该怎么理解、怎么部署、部署完之后应该怎么用。**
+## 一、先说这次为什么不用 Promtail
 
-## 一、先把 Loki 这套结构想清楚
+这里先把路线定清楚。
 
-如果只看一个最小可用方案，Loki 相关组件通常可以先理解成三层：
+过去提到 Loki，很多教程都会直接写：
 
-- **日志采集层**
-- **日志后端**
-- **查询与展示层**
-
-放到最常见的组合里，大概就是：
-
-- **Promtail**（或更新路线里的 Grafana Alloy）负责采集日志
-- **Loki** 负责存储和查询日志
-- **Grafana** 负责展示和查询日志
-
-如果按最简单的数据流来看，就是：
-
-```text
-Pod / 容器日志
-    ↓
-Promtail
-    ↓
-Loki
-    ↓
-Grafana
-```
-
-这条线一定要先记住，因为后面所有部署动作，本质上都是在把这条链路接起来。
-
-## 二、为什么 Loki 适合拿来学 k3s 日志系统
-
-如果只是学习场景，Loki 有几个很现实的优点。
-
-### 1. 它更贴近 Grafana 体系
-
-如果你前面已经在学：
-
-- Prometheus
+- Loki
+- Promtail
 - Grafana
-- Kubernetes 监控
 
-那 Loki 接进来会比较顺。
+这条路以前没问题，但现在如果按更接近官方当前推荐的方向走，应该优先看：
 
-因为它天然就会进入同一套观察路径里：
-
-- 指标在 Grafana 看
-- 日志也在 Grafana 看
-
-### 2. 它更适合先跑通最小链路
-
-如果你现在只是想先完成一条最小实验路线，那 Loki 这套通常比 Elasticsearch 路线更容易收敛。
-
-尤其在单机 k3s 里，这一点会很明显。
-
-### 3. 它更适合作为“先学日志链路”的入口
-
-如果你的重点是先理解：
-
-- 节点上的容器日志是谁采的
-- 日志怎么被送到后端
-- 查询时为什么要依赖标签
-
-那 Loki 很适合拿来建立第一层理解。
-
-## 三、Loki 和 Elasticsearch 路线最大的区别是什么
-
-一句话概括：
-
-> **Loki 不是按 Elasticsearch 那种方式去做重型全文索引。**
-
-Loki 的思路更偏向：
-
-- 给日志打标签
-- 主要按标签组织和定位日志
-- 日志正文不是按 Elasticsearch 那种方式做重全文索引
-
-这意味着：
-
-### 优点
-- 更轻
-- 成本更低一些
-- 更适合和 Grafana / Prometheus 体系一起用
-
-### 代价
-- 查询方式更依赖标签设计
-- 不应该把它理解成“更轻的 Elasticsearch 替代品”
-
-所以在使用 Loki 的时候，一开始最该建立的意识就是：
-
-> **标签设计很重要。**
-
-## 四、在 k3s 里，日志从哪里来
-
-这件事必须讲清楚。
-
-在 Kubernetes / k3s 里，应用日志最常见的入口不是你手工去指定某个业务目录，而是：
-
-- 容器的 `stdout`
-- 容器的 `stderr`
-
-容器运行时会把这些内容写到节点上的容器日志文件里。
-
-Promtail 这种采集器会做的事情，本质上就是：
-
-- 到节点上找这些日志文件
-- 读出来
-- 给它们补上 Kubernetes 相关标签
-- 再发给 Loki
-
-所以从结构上说，Promtail 最适合的运行方式通常是：
-
-- **DaemonSet**
-
-因为它本来就应该按节点铺开。
-
-## 五、单机 k3s 下，我会怎么收敛这次部署目标
-
-如果只是学习，我不会一开始就去追特别完整的 Loki 生产部署。
-
-这次更合理的目标应该是：
-
-- Loki 起得来
-- Promtail 起得来
-- Grafana 能接上 Loki
-- 能在 Grafana 里查到 Pod 日志
-
-只要这四件事成立，这一轮学习就已经足够值了。
-
-也就是说，先不追求：
-
-- 多副本高可用
-- 分布式 Loki
-- 复杂对象存储后端
-- 特别完整的 retention 和 compactor 策略
-
-先把最小链路跑顺。
-
-## 六、部署时我会优先怎么选方案
-
-如果是单机 k3s，我更建议：
-
-- **Loki 用 Helm Chart 部署**
-- **Promtail 也用 Helm Chart 部署**
-- **Grafana 直接接现有实例，或者单独部署一个最小实例**
+- **Loki** 作为日志后端
+- **Grafana Alloy** 作为采集代理
+- **Grafana** 作为查询界面
 
 原因很简单：
 
-- 这样更贴近 Kubernetes 实际使用方式
-- 结构更清楚
-- 后面要改 values 也更方便
+> **Promtail 已经不再是后续重点发展的采集路线，新的采集能力主要往 Grafana Alloy 上收。**
 
-如果你前面已经有现成 Grafana，那么这次只要把 Loki 和采集层接进去就行。
+所以这次我直接按 Alloy 来做，不再沿用旧教程思路。
 
-## 七、部署 Loki 时最关键的不是命令，而是这几个问题
+## 二、这次要落的最小结构
 
-### 1. Loki 的存储怎么选
+这次结构很简单：
 
-在学习环境里，通常会先走最简单的本地持久化或 chart 默认可接受的单机方案。
+```text
+Pod 日志
+  ↓
+Grafana Alloy
+  ↓
+Loki
+  ↓
+Grafana
+```
 
-重点不是“存得多高级”，而是：
+为了控制复杂度，这次先只做最小可用方案：
 
-- 至少别每次重启就全丢
-- 至少能支持你做基本查询
+- `Loki`：单实例
+- `Grafana Alloy`：负责采集容器日志
+- `Grafana`：直接接入 Loki 数据源查询日志
 
-### 2. Promtail 采哪些日志
+这次不先追：
 
-如果你没想清楚采集目标，后面查日志时很容易乱。
+- 多副本高可用
+- 对象存储后端
+- 分布式 Loki
+- 特别复杂的日志处理
 
-在 k3s 学习场景里，最常见的目标就是：
+先把一条可用链路打通。
 
-- Pod 容器日志
+## 三、准备工作
 
-先把这一层采清楚，就已经足够。
+先确保这几个前提已经成立：
 
-### 3. Grafana 里最终怎么查
+### 1. k3s 集群正常
 
-这一步不是部署结束后的附属步骤，而是这次学习的验收标准。
+```bash
+kubectl get nodes
+kubectl get pods -A
+```
 
-如果部署完你只能说“Pod 在 Running”，但查不到日志，那这套链路其实还没学到位。
+### 2. Helm 可用
 
-## 八、Promtail 在这套结构里到底干什么
+```bash
+helm version
+```
 
-Promtail 负责的不是“替你分析日志”，而是：
+### 3. 你已经有一个可用的 Grafana
 
-- 采日志
-- 附标签
-- 发给 Loki
+如果你前面已经装过 `kube-prometheus-stack`，那通常已经有 Grafana，可以直接复用。
 
-这三个动作里，最关键的是中间那个：
+例如先看一下：
 
-- **附标签**
+```bash
+kubectl get svc -n monitoring
+```
 
-因为后面你在 Grafana 里查日志时，很多过滤动作都依赖这些标签。
+只要 Grafana 还在，就不用重复装一个新的。
+
+## 四、添加 Helm 仓库
+
+这次至少要用到 Grafana 的 chart 仓库。
+
+```bash
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+如果你后面还要对照 chart 参数，最好顺手看一下默认 values：
+
+```bash
+helm show values grafana/loki > loki-default-values.yaml
+helm show values grafana/alloy > alloy-default-values.yaml
+```
+
+这个动作很值，因为后面要改配置时，不至于完全盲写。
+
+## 五、先部署 Loki
+
+### 1. 创建命名空间
+
+我这里统一放到 `logging`：
+
+```bash
+kubectl create namespace logging
+```
+
+### 2. 写一个最小可用的 Loki values
+
+新建 `loki-values.yaml`：
+
+```yaml
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+
+loki:
+  auth_enabled: false
+
+  commonConfig:
+    replication_factor: 1
+
+  storage:
+    type: filesystem
+
+  schemaConfig:
+    configs:
+      - from: "2024-01-01"
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+indexGateway:
+  replicas: 0
+compactor:
+  replicas: 0
+ruler:
+  replicas: 0
+
+minio:
+  enabled: false
+
+gateway:
+  enabled: false
+```
+
+这个写法的目的很明确：
+
+- 强制单机最小模式
+- 走本地文件存储
+- 不启用分布式那一堆组件
+- 先把学习成本压下来
+
+### 3. 安装 Loki
+
+```bash
+helm install loki grafana/loki -n logging -f loki-values.yaml
+```
+
+### 4. 验证 Loki
+
+```bash
+kubectl get pods -n logging
+kubectl get svc -n logging
+```
+
+你至少要看到 Loki 相关 Pod 正常起来。
+
+## 六、再部署 Grafana Alloy
+
+这一步才真正把日志采集链路接上。
+
+### 1. 写 Alloy values
+
+新建 `alloy-values.yaml`：
+
+```yaml
+alloy:
+  configMap:
+    create: true
+    content: |-
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      discovery.relabel "pods" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+          separator     = "/"
+          replacement   = "/var/log/pods/*$1/*.log"
+          target_label  = "__path__"
+        }
+
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          target_label  = "app"
+        }
+      }
+
+      loki.source.file "pods" {
+        targets    = discovery.relabel.pods.output
+        forward_to = [loki.write.default.receiver]
+      }
+
+      loki.write "default" {
+        endpoint {
+          url = "http://loki.logging.svc.cluster.local:3100/loki/api/v1/push"
+        }
+      }
+
+controller:
+  type: daemonset
+
+serviceMonitor:
+  enabled: false
+```
+
+这里最关键的点有两个：
+
+### 第一，采集方式是 DaemonSet
+
+因为它本来就应该按节点采集容器日志。
+
+### 第二，日志是直接发给集群内 Loki Service
+
+也就是：
+
+```text
+http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+```
+
+### 2. 安装 Alloy
+
+```bash
+helm install alloy grafana/alloy -n logging -f alloy-values.yaml
+```
+
+### 3. 验证 Alloy
+
+```bash
+kubectl get pods -n logging
+```
+
+如果正常，你应该能看到 Alloy 以 DaemonSet 方式运行。
+
+## 七、确认日志确实进入 Loki
+
+不要只停在“Pod 是 Running”。
+
+这一步一定要验证。
+
+### 1. 查看 Alloy 日志
+
+```bash
+kubectl logs -n logging -l app.kubernetes.io/name=alloy --tail=100
+```
+
+如果采集和推送有问题，这里通常会有明显报错。
+
+### 2. 先制造一点业务日志
+
+最简单的方法是起一个会不断输出日志的小 Pod。
 
 例如：
 
-- `namespace`
-- `pod`
-- `container`
-- `job`
+```bash
+kubectl create deployment logtest --image=busybox -- sleep 3600
+kubectl exec deploy/logtest -- sh -c 'while true; do echo "hello from logtest"; sleep 5; done' &
+```
 
-这些标签不是查询体验的装饰品，而是 Loki 这条路线的核心之一。
+如果你不想这么折腾，也可以直接看现有应用的日志采集情况。
 
-## 九、Grafana 里接入 Loki 时要理解什么
+重点是：
 
-Grafana 里接 Loki，表面上只是多一个 data source。
+> **要让 Loki 有东西可查。**
 
-但真正值得注意的是：
+## 八、在 Grafana 里接入 Loki
 
-- 你查日志时依赖的是标签
-- 查询语法和传统 SQL / 全文搜索不是一回事
-- 日志和指标可以在同一个平台里联动看
+如果你已经有 Grafana，这一步最实际。
 
-这也是 Loki 最大的现实优势之一：
+### 1. 打开 Grafana
 
-> **它不是单独孤立的一套日志前端，而是能自然进入 Grafana 的观测体系里。**
+进入：
 
-如果你前面已经在用 Grafana 看监控，那么接入 Loki 之后，体验会很统一。
+- Connections
+- Data sources
+- Add data source
+- 选择 Loki
 
-## 十、在单机 k3s 里，什么叫“部署成功”
+### 2. 填 Loki 地址
 
-如果不给自己定验收标准，部署日志系统很容易变成“反正 Pod 都起来了”。
+在集群内常见的地址就是：
 
-但真正更有价值的验收应该是：
+```text
+http://loki.logging.svc.cluster.local:3100
+```
 
-### 1. Loki 正常
-后端服务可用。
+如果 Grafana 和 Loki 都在同一个集群里，这个地址通常就够用。
 
-### 2. Promtail 正常
-采集器确实在节点上运行。
+### 3. 保存并测试
 
-### 3. Grafana 已接入 Loki
-不是只有组件起来，而是 Grafana 里真的能用。
+如果 Grafana 能连上 Loki，就说明：
 
-### 4. 能查到真实 Pod 日志
-这一条最重要。
+- 数据源配置没问题
+- Loki 服务本身可访问
 
-因为只有这一条成立，才说明：
+## 九、在 Grafana 里查日志
 
-- 日志确实被采到了
-- 日志确实被送到了 Loki
-- 查询路径也真的通了
+这一步才是这次部署真正的验收。
 
-## 十一、这条路线里最容易踩的坑是什么
+进入 Grafana 的 Explore 页面，选择 Loki 数据源。
 
-如果按学习场景来看，我觉得最容易踩的是这几个坑。
+最先可以试的查询思路是：
 
-### 1. 只关心安装，不关心链路
+### 按 namespace 查
 
-很多人会停在：
+```text
+{namespace="default"}
+```
 
-- Chart 装上了
-- Pod Running 了
+### 按 pod 查
 
-但不去验证日志是不是进了 Loki。
+```text
+{pod="logtest-xxxxxx-xxxxx"}
+```
 
-这会让整个学习过程很空。
+### 按 container 查
 
-### 2. 不重视标签
+```text
+{container="logtest"}
+```
 
-Loki 这条路线和 Elasticsearch 最大的不同之一，就是标签的重要性更高。
+如果前面 Alloy 配置和 Loki 都没问题，这里就应该能看到日志。
 
-如果不理解：
+## 十、这次部署里最关键的几个点
 
-- 日志为什么要带 `namespace`
-- 为什么要带 `pod`
-- 为什么要带 `container`
+### 1. Loki 先走单机最小模式
 
-那后面查日志时会很别扭。
+别一上来就追分布式。
 
-### 3. 一开始就把目标定太重
+### 2. 采集器直接用官方当前主线的 Alloy
 
-如果你在单机 k3s 里一上来就想做：
+不要继续把重点压在旧 Promtail 路线上。
 
-- 高可用
-- 长周期保留
-- 复杂多租户
-- 特别大的数据量
+### 3. Alloy 重点不是“装上”，而是配置对
 
-大概率只会把自己绕进去。
+最关键的是：
 
-更合理的做法还是：
+- 能发现 Pod
+- 能映射到节点日志路径
+- 能附上常用标签
+- 能把日志推到 Loki
 
-> **先把最小可用链路跑通。**
+### 4. Grafana 里能查到日志，才算结束
 
-## 十二、如果现在就要开始学，我建议按什么顺序
+不是 Pod 全绿就算成功。
 
-我会建议这样排。
+## 十一、这条路线最容易踩的坑
 
-### 第一步
-先把 Loki、Promtail、Grafana 三层关系理清楚。
+### 1. Loki 起了，但 Alloy 没采到日志
 
-### 第二步
-再把 Loki 和 Promtail 在 k3s 里部署起来。
+这通常不是 Loki 本身坏了，而是：
 
-### 第三步
-再到 Grafana 里接入 Loki 数据源。
+- 日志路径规则没对上
+- Kubernetes 发现规则没对上
+- 标签重写规则有问题
 
-### 第四步
-最后实际看一条来自 Pod 的日志。
+### 2. Alloy 起了，但推不到 Loki
 
-只要这一轮走通，Loki 这条学习路线就已经落地了。
+这时候通常要先看：
+
+- Loki Service 地址写得对不对
+- Namespace 对不对
+- 集群内 DNS 是否正常
+
+### 3. Grafana 配了 Loki，但 Explore 里没数据
+
+这时候别先怪 Grafana。
+
+先回头查：
+
+- Loki 里到底有没有数据
+- Alloy 有没有报错
+- 业务日志到底有没有产生
+
+## 十二、这次实战的最小成功标准
+
+这次我会把“成功”定义得很明确：
+
+- Loki Running
+- Alloy Running
+- Grafana 数据源正常
+- Explore 页面能查到真实 Pod 日志
+
+只要这四条都成立，这次 Loki 路线就算真正跑通。
 
 ## 写在最后
 
-如果把这篇压缩成一句话，那就是：
+如果目标是单机 `k3s` 学习环境，我会更推荐把 Loki 这条路线理解成：
 
-> **在单机 k3s 里学习日志系统时，Loki 是一条很适合先跑通“采集、存储、查询”完整链路的路线。**
+> **先用 Loki 做后端，用 Alloy 做采集，用 Grafana 做查询，先把一条最小可用日志链路跑通。**
 
-它真正值得学的，不只是“怎么装”，而是：
+这条链路一旦通了，后面再继续补：
 
-- 它为什么适合 Kubernetes
-- Promtail 为什么适合按节点采集
-- Grafana 为什么能让日志和监控放到同一套观察路径里
-- 你最终应该怎样验证这条链路真的成立
+- 更复杂的标签设计
+- 更多日志来源
+- retention 策略
+- 更完整的 Grafana 仪表盘
 
-如果后面继续写，下一篇最值得落地的内容就不是泛讲原理，而是：
-
-> **在 k3s 里实际部署 Loki 和 Promtail，并在 Grafana 中查到真实 Pod 日志。**
+都会顺很多。
