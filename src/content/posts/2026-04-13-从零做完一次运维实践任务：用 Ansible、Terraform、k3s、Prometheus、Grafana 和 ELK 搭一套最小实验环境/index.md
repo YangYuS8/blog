@@ -92,6 +92,10 @@ ssh k3s hostname
 
 如果这一步不顺，后面不要急着怪 Ansible，应该先把 SSH 打通。
 
+如果你前面还没单独整理过 SSH 配置，也可以先看这篇：
+
+- [Git SSH 密钥怎么配：从生成密钥到让 GitHub 走 SSH 的一份完整上手教程](/posts/20260418-01/)
+
 ## 第二步：先搭一个最小的 Ansible 目录
 
 我会先建一个自己的工作目录：
@@ -218,6 +222,11 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 
 这里的重点不是把 `curl | sh` 包了一层，而是：
 
+如果你前面还没系统理解 Helm，这一步最好和这篇一起看：
+
+- [Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门](/posts/20260420-01/)
+
+
 - 以后重装时可以重复跑
 - k3s 安装被纳入了统一流程
 - Helm 也顺手接进来了
@@ -227,6 +236,11 @@ ansible-playbook -i inventory.ini playbooks/k3s.yml
 如果这一步还继续手工装，那前面 Ansible 的价值就还是没有完全发挥出来。
 
 所以我会直接把监控也写成 playbook。
+
+如果你想先补监控这条线的概念，再继续往下看，也可以对应参考：
+
+- [Prometheus 是什么，为什么大家都用它做监控：给新手的一篇入门指南](/posts/20260412-03/)
+- [Grafana 是什么，为什么它总和 Prometheus 一起出现：给新手的一篇入门指南](/posts/20260412-02/)
 
 ### `playbooks/monitoring.yml`
 
@@ -328,15 +342,9 @@ http://127.0.0.1:3000
 - 它和前面已经部署好的 `Grafana` 更容易接起来
 - 采集层可以直接按节点方式运行，而不是额外再拼一套偏传统的日志平台
 
-如果你前面已经看过我写的 Loki 文章，这里可以一起参考：
+如果你想先补 Loki 这条路线的背景，可以配合我前面那篇单独的文章一起看：
 
 - [如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践](/posts/20260421-02/)
-
-另外，前面监控这部分如果想补概念，也可以结合这两篇一起看：
-
-- [Prometheus 是什么，为什么大家都用它做监控：给新手的一篇入门指南](/posts/20260412-03/)
-- [Grafana 是什么，为什么它总和 Prometheus 一起出现：给新手的一篇入门指南](/posts/20260412-02/)
-- [Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门](/posts/20260420-01/)
 
 ### `playbooks/logging.yml`
 
@@ -390,6 +398,9 @@ http://127.0.0.1:3000
                   index:
                     prefix: loki_index_
                     period: 24h
+            limits_config:
+              allow_structured_metadata: true
+              volume_enabled: true
 
           chunksCache:
             enabled: false
@@ -425,6 +436,70 @@ http://127.0.0.1:3000
 
     - name: Install Loki
       shell: helm upgrade --install loki grafana/loki -n logging --create-namespace -f /root/loki-values.yaml
+
+    - name: Write Alloy values
+      copy:
+        dest: /root/alloy-values.yaml
+        mode: '0644'
+        content: |
+          alloy:
+            configMap:
+              create: true
+              content: |-
+                logging {
+                  level  = "info"
+                  format = "logfmt"
+                }
+
+                discovery.kubernetes "pods" {
+                  role = "pod"
+                }
+
+                discovery.relabel "pods" {
+                  targets = discovery.kubernetes.pods.targets
+
+                  rule {
+                    source_labels = ["__meta_kubernetes_namespace"]
+                    target_label  = "namespace"
+                  }
+
+                  rule {
+                    source_labels = ["__meta_kubernetes_pod_name"]
+                    target_label  = "pod"
+                  }
+
+                  rule {
+                    source_labels = ["__meta_kubernetes_pod_container_name"]
+                    target_label  = "container"
+                  }
+
+                  rule {
+                    source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+                    separator     = "/"
+                    replacement   = "/var/log/pods/*$1/*.log"
+                    target_label  = "__path__"
+                  }
+                }
+
+                loki.source.file "pods" {
+                  targets    = discovery.relabel.pods.output
+                  forward_to = [loki.write.default.receiver]
+                }
+
+                loki.write "default" {
+                  endpoint {
+                    url = "http://loki.logging.svc.cluster.local:3100/loki/api/v1/push"
+                  }
+                }
+
+          controller:
+            type: daemonset
+
+          serviceMonitor:
+            enabled: false
+
+    - name: Install Alloy
+      shell: helm upgrade --install alloy grafana/alloy -n logging -f /root/alloy-values.yaml
 ```
 
 ### 执行方式
@@ -433,9 +508,12 @@ http://127.0.0.1:3000
 ansible-playbook -i inventory.ini playbooks/logging.yml
 ```
 
-这一步我这里先只把 Loki 后端收进 Ansible，目的是让日志系统至少先有一个可复用的后端入口。
+这一步我会把日志后端和采集层一起收进 Ansible：
 
-如果后面要继续把采集层也自动化进来，就继续在这套 playbook 基础上补 Grafana Alloy。
+- Loki 负责存储和查询
+- Grafana Alloy 负责按节点采集容器日志
+
+这样这一段才算完整，而不是只有一个“后端先装上再说”的残缺版本。
 
 ## 第八步：这一套自动化路线到底长什么样
 
@@ -456,7 +534,7 @@ ansible-playbook -i inventory.ini playbooks/logging.yml
 - k3s 已经部署
 - Helm 已经安装
 - Prometheus + Grafana 已经落地
-- Loki 后端已经落地
+- Loki 与 Grafana Alloy 已经落地
 
 这时候你再回头看，就会发现 Ansible 已经不只是“装几个包”，而是真的在承担整套部署流程的主线角色。
 
@@ -502,9 +580,10 @@ Grafana 页面能访问。
 ```bash
 ssh k3s sudo kubectl get pods -n logging
 ssh k3s sudo kubectl get svc -n logging
+ssh k3s sudo kubectl logs -n logging -l app.kubernetes.io/name=alloy --tail=50
 ```
 
-至少 Loki 相关 Pod 正常运行。
+至少 Loki 和 Alloy 都正常运行，并且 Alloy 没有明显推送报错。
 
 ## 这次实践里，我现在更在意的事
 
