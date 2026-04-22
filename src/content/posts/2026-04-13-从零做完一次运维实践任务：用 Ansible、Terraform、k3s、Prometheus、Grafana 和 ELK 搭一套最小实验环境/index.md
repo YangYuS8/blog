@@ -475,8 +475,8 @@ http://127.0.0.1:3000
 
                   rule {
                     source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
-                    separator     = "/"
-                    replacement   = "/var/log/pods/*$1/*.log"
+                    separator     = "_"
+                    replacement   = "/var/log/pods/*$1/$2/*.log"
                     target_label  = "__path__"
                   }
                 }
@@ -584,6 +584,14 @@ ssh k3s sudo kubectl logs -n logging -l app.kubernetes.io/name=alloy --tail=50
 ```
 
 至少 Loki 和 Alloy 都正常运行，并且 Alloy 没有明显推送报错。
+
+如果这里日志采集不正常，优先检查 Alloy 配置里的 `__path__` 规则是否真的匹配这台机器上的 `/var/log/pods` 目录结构。像 k3s 这种环境里，目录名通常会带上：
+
+- namespace
+- pod name
+- pod uid
+
+所以路径规则不能偷懒只按 pod uid 去猜，最好直接按实际目录结构去匹配。
 
 ## 这次实践里，我现在更在意的事
 
