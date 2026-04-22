@@ -240,7 +240,7 @@ alloy:
         role = "pod"
       }
 
-      discovery.relabel "pods" {
+      discovery.relabel "pod_logs" {
         targets = discovery.kubernetes.pods.targets
 
         rule {
@@ -259,20 +259,13 @@ alloy:
         }
 
         rule {
-          source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
-          separator     = "_"
-          replacement   = "/var/log/pods/*$1/$2/*.log"
-          target_label  = "__path__"
-        }
-
-        rule {
           source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
           target_label  = "app"
         }
       }
 
-      loki.source.file "pods" {
-        targets    = discovery.relabel.pods.output
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.relabel.pod_logs.output
         forward_to = [loki.write.default.receiver]
       }
 
@@ -331,15 +324,9 @@ kubectl logs -n logging -l app.kubernetes.io/name=alloy --tail=100
 
 如果采集和推送有问题，这里通常会有明显报错。
 
-这里最常见的一个问题，就是 `__path__` 规则写错，导致 Alloy 虽然是 Running，但一直在报 `stat ... no such file or directory`。
+这里最常见的一个问题，就是还在沿用手工拼 `/var/log/pods` 的旧规则，结果 Alloy 虽然是 Running，但一直在报 `stat ... no such file or directory`。
 
-像 k3s 这种环境里，`/var/log/pods` 的目录名通常会把下面这些内容拼在一起：
-
-- namespace
-- pod name
-- pod uid
-
-所以路径规则不能只想当然地按 pod uid 去猜，必须按这台机器上的真实目录结构去匹配。
+如果是在 k3s 这种环境里，我现在更建议直接改用 `loki.source.kubernetes`，避免自己去猜节点上的日志目录结构。
 
 ### 2. 先制造一点业务日志
 

@@ -455,7 +455,7 @@ http://127.0.0.1:3000
                   role = "pod"
                 }
 
-                discovery.relabel "pods" {
+                discovery.relabel "pod_logs" {
                   targets = discovery.kubernetes.pods.targets
 
                   rule {
@@ -472,17 +472,10 @@ http://127.0.0.1:3000
                     source_labels = ["__meta_kubernetes_pod_container_name"]
                     target_label  = "container"
                   }
-
-                  rule {
-                    source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
-                    separator     = "_"
-                    replacement   = "/var/log/pods/*$1/$2/*.log"
-                    target_label  = "__path__"
-                  }
                 }
 
-                loki.source.file "pods" {
-                  targets    = discovery.relabel.pods.output
+                loki.source.kubernetes "pod_logs" {
+                  targets    = discovery.relabel.pod_logs.output
                   forward_to = [loki.write.default.receiver]
                 }
 
@@ -585,13 +578,7 @@ ssh k3s sudo kubectl logs -n logging -l app.kubernetes.io/name=alloy --tail=50
 
 至少 Loki 和 Alloy 都正常运行，并且 Alloy 没有明显推送报错。
 
-如果这里日志采集不正常，优先检查 Alloy 配置里的 `__path__` 规则是否真的匹配这台机器上的 `/var/log/pods` 目录结构。像 k3s 这种环境里，目录名通常会带上：
-
-- namespace
-- pod name
-- pod uid
-
-所以路径规则不能偷懒只按 pod uid 去猜，最好直接按实际目录结构去匹配。
+如果这里日志采集不正常，我现在更建议优先检查是不是还在用手工拼接 `/var/log/pods` 路径的旧思路。对 k3s 这种环境来说，直接改用 `loki.source.kubernetes` 往往更稳，因为它不用你自己去猜节点上的日志目录结构。
 
 ## 这次实践里，我现在更在意的事
 
