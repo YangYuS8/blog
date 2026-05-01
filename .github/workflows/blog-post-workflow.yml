@@ -1,0 +1,30 @@
+name: Update README with latest blog posts
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Update README from RSS
+        uses: gautamkrishnar/blog-post-workflow@master
+        with:
+          feed_list: "https://blog.yangyus8.top/rss.xml"
+          max_post_count: 5
+          readme_path: ./README.md
+          comment_tag_name: BLOG-POST-LIST
+          commit_message: "docs: update README with latest blog posts"
+          committer_username: "blog-post-bot"
+          committer_email: "blog-post-bot@example.com"
+          template: "- $date · [$title]($url)"
+          date_format: "yyyy-mm-dd"
