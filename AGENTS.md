@@ -105,6 +105,33 @@ Match the repository’s existing tone:
 - explanatory, especially for beginners
 - grounded in real actions and real outcomes
 
+The user's current preferred blog style is more specific than the older posts may suggest:
+
+- concise and tutorial-oriented
+- short paragraphs
+- direct headings that state the task/platform clearly
+- step-by-step operational writing
+- screenshot-led explanations where images carry part of the tutorial flow
+- minimal filler, minimal scene-setting, minimal rhetorical transitions
+- personal remarks only when clearly marked as reference, preference, or caveat
+
+Prefer structures like:
+
+1. direct topic statement
+2. prerequisites / what to prepare
+3. step-by-step actions
+4. screenshots or UI anchors
+5. brief FAQ / troubleshooting
+6. short operational summary
+
+Prefer wording that helps the reader act immediately. Optimize for:
+
+- what to click
+- what to download
+- what to enable
+- what to verify
+- what to check when it fails
+
 Avoid:
 
 - fake certainty
@@ -112,8 +139,14 @@ Avoid:
 - generic “best practices” with no context
 - pretending a step was executed if it was not
 - fabricated logs, commands, or results
+- long titles with conversational framing
+- chatty/meta sections like “先说一句实话”, “这篇怎么用”, “最后想说一句”
+- explanatory filler such as “为什么常见 / 主要在考什么 / 你做的时候要注意” unless the user explicitly asks for that format
+- emotional or persuasive copy when a tutorial step would do
 
 If critical information is missing, explicitly mark it as something the user needs to confirm or provide.
+
+When unsure, make the article read more like a usable walkthrough and less like an AI answer.
 
 ## 7. Editing rules for agents
 
