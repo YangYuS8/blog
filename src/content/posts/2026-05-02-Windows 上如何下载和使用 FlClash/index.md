@@ -9,7 +9,6 @@ category: '软件教程'
 draft: false
 lang: 'zh_CN'
 ---
-
 FlClash 是一个基于 ClashMeta / Mihomo 的图形客户端，支持 Windows、macOS、Linux 和 Android。
 
 本文按 Windows 平台整理它的下载和基础使用流程。
@@ -37,9 +36,9 @@ Windows 常见下载包有两个：
 
 ![image-20260502175442277](./assets/image-20260502175442277.png)
 
-当然，如果你没办法正常访问官方链接，我这里给你提供了一个安装包：[FlClash-0.8.92-windows-amd64-setup.exe](./assets/FlClash-0.8.92-windows-amd64-setup.exe)
+当然，如果你没办法正常访问官方链接，也可以去官方的镜像地址下载安装包：[FlClash-0.8.91-windows-amd64-setup.exe](https://dl.p6p.net/FlClash/v0.8.91/FlClash-0.8.91-windows-amd64-setup.exe)
 
-## 安装 FlClash 
+## 安装 FlClash
 
 1. 双击运行安装包
 2. 如果 Windows 提示“Windows 已保护你的电脑”，先点“更多信息”，再点“仍要运行”
