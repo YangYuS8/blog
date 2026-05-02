@@ -155,13 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->
-- 2026-04-21 · [如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践](https://blog.yangyus8.top/posts/20260421-02/)
-- 2026-04-21 · [ELK、EFK 和 Loki 分别是什么：面向日志系统选型的一篇横向对比](https://blog.yangyus8.top/posts/20260421-01/)
-- 2026-04-20 · [Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门](https://blog.yangyus8.top/posts/20260420-02/)
-- 2026-04-20 · [为什么我的 kube-prometheus-stack 总装不上：从 Helm 报错到 k3s 代理配置的排查记录](https://blog.yangyus8.top/posts/20260420-01/)
-- 2026-04-18 · [Git SSH 密钥怎么配：从生成密钥到让 GitHub 走 SSH 的一份完整上手教程](https://blog.yangyus8.top/posts/20260418-01/)
-<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-05-02 · [DevOps 实习面试常见 Shell 练习题 12 则](https://blog.yangyus8.top/posts/20260502-01/)- 2026-04-21 · [如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践](https://blog.yangyus8.top/posts/20260421-02/)- 2026-04-21 · [ELK、EFK 和 Loki 分别是什么：面向日志系统选型的一篇横向对比](https://blog.yangyus8.top/posts/20260421-01/)- 2026-04-20 · [为什么我的 kube-prometheus-stack 总装不上：从 Helm 报错到 k3s 代理配置的排查记录](https://blog.yangyus8.top/posts/20260420-02/)- 2026-04-20 · [Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门](https://blog.yangyus8.top/posts/20260420-01/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
