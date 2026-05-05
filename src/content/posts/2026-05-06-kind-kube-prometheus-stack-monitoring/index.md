@@ -66,14 +66,73 @@ helm version
 
 如果这三条命令都能正常输出版本，再继续往下做。
 
-## 第一步：创建一个专门练监控的 kind 多节点集群
+## 第一步：先把实验文件按仓库结构放好
 
-先单独建一个集群，不要和之前的实验环境混在一起。
+如果你准备把这套练习长期保留下来，推荐不要把 YAML 和命令散落在桌面目录里，而是单独放进一个实验仓库。
 
-新建配置文件：
+这次对应的仓库是：
+
+::github{repo="YangYuS8/k8s-lab"}
+
+这篇里用到的监控实验放在 `observability/` 子目录下。
+
+我现在这套内容对应的目录结构是：
+
+```text
+~/Code/k8s-lab/
+├── README.md
+└── observability/
+    ├── README.md
+    ├── clusters/
+    │   └── kind/
+    │       └── obs/
+    │           └── kind-observability.yaml
+    ├── helm/
+    │   ├── ingress-nginx/
+    │   │   └── values.yaml
+    │   └── kube-prometheus-stack/
+    │       └── values.yaml
+    ├── manifests/
+    │   └── demo/
+    │       ├── namespace.yaml
+    │       ├── prometheus-example-app.yaml
+    │       └── servicemonitor.yaml
+    └── scripts/
+        ├── install.sh
+        ├── uninstall.sh
+        └── port-forward.sh
+```
+
+先进入实验目录：
 
 ```bash
-cat > kind-observability.yaml <<'EOF'
+cd ~/Code/k8s-lab/observability
+```
+
+### 这一步的作用是什么
+
+这样整理有几个实际好处：
+
+- `clusters/` 放集群配置
+- `helm/` 放各个 chart 的 values
+- `manifests/` 放业务或示例资源
+- `scripts/` 放安装、卸载和调试脚本
+- 仓库根目录的 `README.md` 负责整个 `k8s-lab` 的总入口
+- `observability/README.md` 负责这次监控实验的详细说明
+
+也就是说，这篇文章不再只是“做完一次实验”，而是把这次实验沉淀成仓库里的一个独立实验目录，后面还可以继续往 `k8s-lab` 里补别的主题。
+
+## 第二步：查看并使用 kind 集群配置
+
+这份 kind 配置文件放在：
+
+```text
+clusters/kind/obs/kind-observability.yaml
+```
+
+内容如下：
+
+```yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
@@ -87,13 +146,12 @@ nodes:
         protocol: TCP
   - role: worker
   - role: worker
-EOF
 ```
 
-创建集群：
+手动创建集群时，可以这样执行：
 
 ```bash
-kind create cluster --name obs --config kind-observability.yaml
+kind create cluster --name obs --config clusters/kind/obs/kind-observability.yaml
 kubectl get nodes -o wide
 ```
 
@@ -114,7 +172,24 @@ kubectl get nodes -o wide
 
 如果不提前做这个端口映射，后面的 Ingress 虽然资源能创建成功，但你从宿主机访问会不方便很多。
 
-## 第二步：安装 ingress-nginx
+## 第三步：安装 ingress-nginx
+
+这个 chart 的 values 文件放在：
+
+```text
+helm/ingress-nginx/values.yaml
+```
+
+内容如下：
+
+```yaml
+controller:
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+```
 
 先加仓库并更新索引：
 
@@ -123,15 +198,13 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 ```
 
-安装 `ingress-nginx`：
+再通过 values 文件安装：
 
 ```bash
 helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   -n ingress-nginx \
   --create-namespace \
-  --set controller.service.type=NodePort \
-  --set controller.service.nodePorts.http=30080 \
-  --set controller.service.nodePorts.https=30443 \
+  -f helm/ingress-nginx/values.yaml \
   --wait
 ```
 
@@ -184,12 +257,17 @@ Ingress 主要是按 `Host` 匹配规则转发流量。
 
 如果你只访问 `http://127.0.0.1:8080`，Ingress 往往无法按你期望的规则把请求转到目标服务。
 
-## 第四步：写 kube-prometheus-stack 的 values 文件
+## 第五步：查看 kube-prometheus-stack 的 values 文件
 
-新建一个自定义 values 文件：
+这个 values 文件放在：
 
-```bash
-cat > kube-prometheus-stack-values.yaml <<'EOF'
+```text
+helm/kube-prometheus-stack/values.yaml
+```
+
+内容如下：
+
+```yaml
 fullnameOverride: kps
 
 grafana:
@@ -250,7 +328,6 @@ kubeScheduler:
 
 kubeEtcd:
   enabled: false
-EOF
 ```
 
 ### 这一步的作用是什么
@@ -350,7 +427,7 @@ kubeEtcd:
 - 让你先把主要监控链路跑通
 - 避免一上来就被一堆红色状态误导
 
-## 第五步：安装 kube-prometheus-stack
+## 第六步：安装 kube-prometheus-stack
 
 先加仓库并更新：
 
@@ -366,10 +443,26 @@ kubectl create namespace monitoring
 
 helm upgrade --install kps prometheus-community/kube-prometheus-stack \
   -n monitoring \
-  -f kube-prometheus-stack-values.yaml \
+  -f helm/kube-prometheus-stack/values.yaml \
   --wait \
   --timeout 10m
 ```
+
+如果你已经把脚本也放进仓库，其实这里也可以直接走：
+
+```bash
+./scripts/install.sh
+```
+
+这个脚本会顺序完成：
+
+- 创建 `kind` 集群
+- 安装 `ingress-nginx`
+- 安装 `kube-prometheus-stack`
+- 应用 `manifests/demo/` 里的示例资源
+- 打印 Ingress 和 ServiceMonitor 检查结果
+
+也就是说，手工命令适合你逐步理解，脚本适合你后面重复搭环境。
 
 安装完成后检查：
 
@@ -436,78 +529,28 @@ Grafana 默认登录信息：
 - Grafana 已经配置好了数据源
 - 默认 Dashboard 已经能直接展示 Kubernetes 指标
 
-## 第七步：部署一个带 metrics 的示例应用
+## 第八步：部署一个带 metrics 的示例应用
 
 真正能说明你已经理解这套体系的，不是把 Grafana 打开，而是把自己的应用接进来。
 
-先创建命名空间：
+这套示例资源现在拆到了：
 
-```bash
-kubectl create namespace demo
+```text
+manifests/demo/
+├── namespace.yaml
+├── prometheus-example-app.yaml
+└── servicemonitor.yaml
 ```
 
-再写示例应用清单：
+你可以逐个应用：
 
 ```bash
-cat > demo-app.yaml <<'EOF'
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: prometheus-example-app
-  namespace: demo
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: prometheus-example-app
-  template:
-    metadata:
-      labels:
-        app: prometheus-example-app
-    spec:
-      containers:
-        - name: app
-          image: quay.io/brancz/prometheus-example-app:v0.5.0
-          ports:
-            - name: web
-              containerPort: 8080
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: prometheus-example-app
-  namespace: demo
-  labels:
-    app: prometheus-example-app
-spec:
-  selector:
-    app: prometheus-example-app
-  ports:
-    - name: web
-      port: 8080
-      targetPort: web
----
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: prometheus-example-app
-  namespace: demo
-spec:
-  selector:
-    matchLabels:
-      app: prometheus-example-app
-  endpoints:
-    - port: web
-      path: /metrics
-      interval: 15s
-EOF
+kubectl apply -f manifests/demo/namespace.yaml
+kubectl apply -f manifests/demo/prometheus-example-app.yaml
+kubectl apply -f manifests/demo/servicemonitor.yaml
 ```
 
-应用清单：
-
-```bash
-kubectl apply -f demo-app.yaml
-```
+也可以直接交给前面的 `./scripts/install.sh` 一次性处理。
 
 检查结果：
 
@@ -544,7 +587,7 @@ kubectl get servicemonitor -n demo
 
 只要 Prometheus 被配置成允许发现这个命名空间里的 `ServiceMonitor`，它就会自动把这个应用加入抓取目标。
 
-## 第八步：去 Prometheus 页面验证 Target 和指标
+## 第九步：去 Prometheus 页面验证 Target 和指标
 
 打开：
 
@@ -577,7 +620,7 @@ http_requests_total
 
 如果这里能看到 Target `Up`，说明你已经完成了从“部署监控栈”到“接入自定义应用”的闭环。
 
-## 第九步：这套环境起来以后，应该重点练什么
+## 第十步：这套环境起来以后，应该重点练什么
 
 环境搭好以后，不要只停留在“我会访问 Grafana”。
 
@@ -644,35 +687,27 @@ kubectl get cm -n monitoring | grep grafana
 
 ## 清理环境
 
-如果你练完了，想一键清理，可以按下面做。
-
-先删监控栈：
+如果你练完了，想一键清理，现在更推荐直接用仓库里的脚本：
 
 ```bash
-helm uninstall kps -n monitoring
-kubectl delete namespace monitoring
+./scripts/uninstall.sh
 ```
 
-如果你还想彻底删掉 Operator 相关 CRD，可以继续：
+如果你还想顺便删除 Prometheus Operator 相关 CRD：
 
 ```bash
-kubectl delete crd alertmanagerconfigs.monitoring.coreos.com
-kubectl delete crd alertmanagers.monitoring.coreos.com
-kubectl delete crd podmonitors.monitoring.coreos.com
-kubectl delete crd probes.monitoring.coreos.com
-kubectl delete crd prometheusagents.monitoring.coreos.com
-kubectl delete crd prometheuses.monitoring.coreos.com
-kubectl delete crd prometheusrules.monitoring.coreos.com
-kubectl delete crd scrapeconfigs.monitoring.coreos.com
-kubectl delete crd servicemonitors.monitoring.coreos.com
-kubectl delete crd thanosrulers.monitoring.coreos.com
+DELETE_CRDS=true ./scripts/uninstall.sh
 ```
 
-最后删除整个 kind 集群：
+如果你只是临时不想走 Ingress，也可以改用：
 
 ```bash
-kind delete cluster --name obs
+./scripts/port-forward.sh grafana
+./scripts/port-forward.sh prometheus
+./scripts/port-forward.sh alertmanager
 ```
+
+这样后面重看这套实验时，不只是命令还在，连安装、清理和调试入口都已经整理好了。
 
 ## 这篇流程做完以后，你真正掌握了什么
 
