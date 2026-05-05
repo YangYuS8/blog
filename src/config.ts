@@ -25,6 +25,22 @@ export const siteConfig: SiteConfig = {
 			url: "https://zh.moegirl.org.cn/%E6%9C%88%E8%A7%81%E5%85%AB%E5%8D%83%E4%BB%A3", // 可选：原图作品或作者页面的链接
 		},
 	},
+	comments: {
+		giscus: {
+			enabled: true,
+			repo: "YangYuS8/blog",
+			repoId: "R_kgDORgxUDQ",
+			category: "Announcements",
+			categoryId: "DIC_kwDORgxUDc4C8aLr",
+			mapping: "pathname",
+			strict: "0",
+			reactionsEnabled: "1",
+			emitMetadata: "0",
+			inputPosition: "top",
+			lang: "zh-CN",
+			loading: "lazy",
+		},
+	},
 	toc: {
 		enable: true, // 在文章右侧显示目录
 		depth: 2, // 目录中显示的最大标题层级，范围为 1 到 3
