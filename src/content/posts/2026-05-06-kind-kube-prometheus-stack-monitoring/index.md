@@ -208,6 +208,48 @@ helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
   --wait
 ```
 
+如果你宿主机的代理写的是本地回环地址，比如：
+
+- `HTTP_PROXY=http://127.0.0.1:7890`
+- `HTTPS_PROXY=http://127.0.0.1:7890`
+
+要注意：`helm repo update` 在宿主机上能走代理，不代表 kind 节点里拉镜像也能走同一个地址。
+
+`ingress-nginx` 真正卡住的地方，通常不是 Helm 本身，而是集群节点里的 `containerd` 在拉这些镜像时仍然访问自己的 `127.0.0.1:7890`：
+
+- `registry.k8s.io/ingress-nginx/controller`
+- `registry.k8s.io/ingress-nginx/kube-webhook-certgen`
+
+这时常见现象是：
+
+- `helm upgrade --install` 很慢
+- 最后 `--wait` 超时或 `context canceled`
+- `kubectl get pods -n ingress-nginx` 里出现 `ImagePullBackOff`
+
+可以直接看事件确认：
+
+```bash
+kubectl get events -n ingress-nginx --sort-by=.lastTimestamp
+```
+
+如果输出里出现类似报错：
+
+```text
+proxyconnect tcp: dial tcp 127.0.0.1:7890: connect: connection refused
+```
+
+说明问题不在 values，也不在 Ingress 资源本身，而是在 kind 节点内部拿不到宿主机上的本地代理。
+
+这种情况下，推荐直接用实验仓库里的 `observability/scripts/install.sh` 安装。脚本已经把这类本地代理场景处理掉了：当它检测到 `HTTP_PROXY` / `HTTPS_PROXY` 指向 `127.0.0.1` 或 `localhost` 时，会自动把 kind 节点里 `containerd` 的代理改写成 Docker `kind` 网络中的宿主机网关地址，再继续安装。
+
+如果你想手工指定，也可以显式传：
+
+```bash
+KIND_NODE_PROXY=http://172.18.0.1:7890 ./scripts/install.sh
+```
+
+这里的 `172.18.0.1` 只是当前默认 Docker bridge/kind 网络里常见的宿主机网关地址，实际环境如果不同，请改成你机器上的真实网关地址。
+
 检查结果：
 
 ```bash
