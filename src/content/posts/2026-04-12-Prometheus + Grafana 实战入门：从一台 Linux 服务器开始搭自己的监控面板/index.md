@@ -1,6 +1,6 @@
 ---
 title: "Prometheus + Grafana 实战入门：从一台 Linux 服务器开始搭自己的监控面板"
-urlSlug: '20260412-04'
+urlSlug: 'prometheus-grafana-linux-monitoring-dashboard'
 published: 2026-04-12
 description: '一篇偏实战的 Prometheus + Grafana 入门教程：从 node_exporter 开始，到 Prometheus 抓指标，再到 Grafana 出图，尽量按新手可以照着做的顺序来写。'
 image: ''

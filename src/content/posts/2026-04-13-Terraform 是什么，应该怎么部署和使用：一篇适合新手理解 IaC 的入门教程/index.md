@@ -1,6 +1,6 @@
 ---
 title: "Terraform 是什么，应该怎么部署和使用：一篇适合新手理解 IaC 的入门教程"
-urlSlug: '20260413-04'
+urlSlug: 'terraform-iac-introduction'
 published: 2026-04-13
 description: '一篇面向新手的 Terraform 入门文章：它到底解决什么问题、什么是基础设施即代码、最基础的目录结构、常见命令和使用方式应该怎么理解。'
 image: ''

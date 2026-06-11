@@ -1,6 +1,6 @@
 ---
 title: "Prometheus 是什么，为什么大家都用它做监控：给新手的一篇入门指南"
-urlSlug: '20260412-01'
+urlSlug: 'prometheus-monitoring-introduction'
 published: 2026-04-12
 description: '一篇面向新手的 Prometheus 入门文章：它是什么、能做什么、和传统监控有什么区别，以及最基础的部署和使用方式。'
 image: ''

@@ -1,6 +1,6 @@
 ---
 title: "systemd 配置文件怎么写：从 service 文件结构到常见字段的详细入门"
-urlSlug: '20260413-01'
+urlSlug: 'systemd-service-unit-file-guide'
 published: 2026-04-13
 description: '一篇面向新手的 systemd 入门文章：service 文件到底是什么、常见段落和字段怎么写、为什么这样写，以及最常见的查看、重载、启动和排错方法。'
 image: ''

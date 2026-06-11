@@ -1,6 +1,6 @@
 ---
 title: "ELK、EFK 和 Loki 分别是什么：面向日志系统选型的一篇横向对比"
-urlSlug: '20260421-01'
+urlSlug: 'elk-efk-loki-logging-stack-comparison'
 published: 2026-04-21
 description: '直接比较 ELK、EFK 和 Loki 三条常见日志路线，分别说明它们的组成、处理链路、适用场景、优缺点，以及在 Kubernetes 学习和实验环境中应当怎样理解它们的差别。'
 image: ''

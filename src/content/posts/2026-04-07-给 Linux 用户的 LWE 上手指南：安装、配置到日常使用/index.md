@@ -1,6 +1,6 @@
 ---
 title: "给 Linux 用户的 LWE 上手指南：安装、配置到日常使用"
-urlSlug: '20260407-01'
+urlSlug: 'lwe-linux-install-config-guide'
 published: 2026-04-07
 description: '这是一篇面向普通用户的 LWE 入门文章：从安装前准备、安装方式选择，到首次配置 Steam Web API Key、浏览创意工坊、导入并应用壁纸。'
 image: ''

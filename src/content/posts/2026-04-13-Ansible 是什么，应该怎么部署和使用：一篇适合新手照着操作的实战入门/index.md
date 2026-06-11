@@ -1,6 +1,6 @@
 ---
 title: "Ansible 是什么，应该怎么部署和使用：一篇适合新手照着操作的实战入门"
-urlSlug: '20260413-03'
+urlSlug: 'ansible-deploy-usage-guide'
 published: 2026-04-13
 description: '一篇面向新手的 Ansible 入门文章：它到底解决什么问题、为什么会比手工登录更高效，以及如何从安装、inventory、ad-hoc 命令到 playbook 一步步开始使用。'
 image: ''

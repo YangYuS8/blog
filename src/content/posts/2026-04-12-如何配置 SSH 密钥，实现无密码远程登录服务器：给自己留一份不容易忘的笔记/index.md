@@ -1,6 +1,6 @@
 ---
 title: "如何配置 SSH 密钥，实现无密码远程登录服务器：给自己留一份不容易忘的笔记"
-urlSlug: '20260412-03'
+urlSlug: 'ssh-key-passwordless-server-login'
 published: 2026-04-12
 description: '一篇写给自己的 SSH 免密登录备忘：从生成密钥、拷贝公钥到服务器，到最后验证无密码登录是否成功，尽量按最省事的顺序讲清楚。'
 image: ''

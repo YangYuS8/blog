@@ -1,6 +1,6 @@
 ---
 title: "在 CachyOS 上给 OpenCode 接 Playwright CLI：为什么我又手动搬了一次 skill"
-urlSlug: '20260316-02'
+urlSlug: 'cachyos-opencode-playwright-cli-skill'
 published: 2026-03-16
 description: '记录我在 CachyOS 上用 pnpm 给 OpenCode 接 Playwright CLI 的过程：官方为什么更推荐 CLI + skills、为什么全局安装之后 skill 却先落到了工作区，以及我最后为什么又把它手动搬到真正的全局目录。'
 image: ''

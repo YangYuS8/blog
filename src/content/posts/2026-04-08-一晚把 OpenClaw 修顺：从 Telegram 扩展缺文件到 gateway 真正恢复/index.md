@@ -1,6 +1,6 @@
 ---
 title: "一晚把 OpenClaw 修顺：从 Telegram 扩展缺文件到 gateway 真正恢复"
-urlSlug: '20260408-01'
+urlSlug: 'openclaw-telegram-gateway-recovery'
 published: 2026-04-08
 description: '记录一次把 OpenClaw 从异常状态修回正常的过程：Telegram 扩展加载缺文件、gateway service 残留旧版本、GEMINI_API_KEY 没进 systemd 环境，最后把整条链路理顺。'
 image: ''

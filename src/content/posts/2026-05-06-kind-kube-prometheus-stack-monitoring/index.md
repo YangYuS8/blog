@@ -1,6 +1,6 @@
 ---
 title: "如何在 kind 中部署 kube-prometheus-stack：用 Helm 搭一套可访问的 Grafana、Prometheus 和 Alertmanager 练习环境"
-urlSlug: '20260506-01'
+urlSlug: 'kind-kube-prometheus-stack-monitoring-guide'
 published: 2026-05-06
 description: '一篇按步骤展开的 kind 监控实战教程：创建多节点集群、安装 ingress-nginx、部署 kube-prometheus-stack、配置 Grafana/Prometheus/Alertmanager 访问入口，并用 ServiceMonitor 接入一个示例应用。'
 image: ''

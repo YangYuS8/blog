@@ -1,1 +1,199 @@
-{}
+{
+	"redirects": [
+		{
+			"source": "/posts/20260308-02/",
+			"destination": "/posts/blog-url-slug-refactor/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260308-01/",
+			"destination": "/posts/blog-first-night/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260309-02/",
+			"destination": "/posts/zprofile-zshrc-split-optimization/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260309-01/",
+			"destination": "/posts/zsh-config-cleanup/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260312-01/",
+			"destination": "/posts/cachyos-neovide-lazyvim/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260313-02/",
+			"destination": "/posts/opencode-skill-superpowers/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260313-01/",
+			"destination": "/posts/php-docker-study-template/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260316-02/",
+			"destination": "/posts/cachyos-opencode-playwright-cli-skill/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260316-01/",
+			"destination": "/posts/opencode-playwright-mcp-lite-debug/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260318-01/",
+			"destination": "/posts/kubernetes-local-cluster-endeavouros/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260320-02/",
+			"destination": "/posts/linux-mint-python-package-management-repair/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260320-01/",
+			"destination": "/posts/opencode-openai-login-provider-fix/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260323-01/",
+			"destination": "/posts/openclaw-skills-coding-agent-zellij/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260324-01/",
+			"destination": "/posts/zabbix-server-docker-agent2-unavailable/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260324-02/",
+			"destination": "/posts/zabbix-server-vm-docker-agent2-host/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260325-02/",
+			"destination": "/posts/zabbix-linux-agent-active-agent2/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260325-01/",
+			"destination": "/posts/openclaw-opencode-acp-backend-troubleshooting/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260407-01/",
+			"destination": "/posts/lwe-linux-install-config-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260408-02/",
+			"destination": "/posts/openclaw-fnm-system-environment/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260408-01/",
+			"destination": "/posts/openclaw-telegram-gateway-recovery/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260411-01/",
+			"destination": "/posts/tailscale-v2raya-dns-takeover/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260412-02/",
+			"destination": "/posts/grafana-prometheus-introduction/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260412-04/",
+			"destination": "/posts/prometheus-grafana-linux-monitoring-dashboard/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260412-01/",
+			"destination": "/posts/prometheus-monitoring-introduction/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260412-03/",
+			"destination": "/posts/ssh-key-passwordless-server-login/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260413-03/",
+			"destination": "/posts/ansible-deploy-usage-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260413-04/",
+			"destination": "/posts/terraform-iac-introduction/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260413-01/",
+			"destination": "/posts/systemd-service-unit-file-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260413-02/",
+			"destination": "/posts/devops-practice-server-monitoring-logging/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260416-01/",
+			"destination": "/posts/opencode-project-skills-grade-workflow/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260418-01/",
+			"destination": "/posts/git-ssh-key-github-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260420-01/",
+			"destination": "/posts/helm-kubernetes-beginner-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260420-02/",
+			"destination": "/posts/kube-prometheus-stack-helm-k3s-proxy-fix/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260421-02/",
+			"destination": "/posts/k3s-loki-grafana-log-query-guide/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260421-01/",
+			"destination": "/posts/elk-efk-loki-logging-stack-comparison/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260502-01/",
+			"destination": "/posts/devops-shell-interview-exercises/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260502-02/",
+			"destination": "/posts/windows-flclash-download-usage/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260506-02/",
+			"destination": "/posts/headscale-fedora-dns-latency-fix/",
+			"permanent": true
+		},
+		{
+			"source": "/posts/20260506-01/",
+			"destination": "/posts/kind-kube-prometheus-stack-monitoring-guide/",
+			"permanent": true
+		}
+	]
+}

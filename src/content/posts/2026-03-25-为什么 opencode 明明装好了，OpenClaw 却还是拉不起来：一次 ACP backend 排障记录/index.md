@@ -1,6 +1,6 @@
 ---
 title: "为什么 opencode 明明装好了，OpenClaw 却还是拉不起来：一次 ACP backend 排障记录"
-urlSlug: '20260325-01'
+urlSlug: 'openclaw-opencode-acp-backend-troubleshooting'
 published: 2026-03-25
 description: '记录一次 OpenClaw ACP 排障：为什么 opencode 命令本身可用，但通过 OpenClaw 的 ACP runtime 调用时仍然报错；最后如何定位到 acpx 插件和 acp 顶层配置缺失的问题。'
 image: ''

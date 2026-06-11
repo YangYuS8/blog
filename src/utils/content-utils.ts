@@ -1,10 +1,15 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import { isDateOnlyPostSlug } from "@utils/post-slug-utils";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
 export function getPostPublicSlug(post: CollectionEntry<"posts">): string {
-	return post.data.urlSlug?.trim() || post.slug;
+	const explicitSlug = post.data.urlSlug?.trim();
+	if (explicitSlug && !isDateOnlyPostSlug(explicitSlug)) {
+		return explicitSlug;
+	}
+	return post.slug;
 }
 
 // // Retrieve posts and sort them by publication date

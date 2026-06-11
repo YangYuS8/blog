@@ -1,6 +1,6 @@
 ---
 title: "Zabbix server 在 Docker、agent2 在宿主机时，为什么会报 Zabbix agent is not available"
-urlSlug: '20260324-01'
+urlSlug: 'zabbix-server-docker-agent2-unavailable'
 published: 2026-03-24
 description: '记录一次 Zabbix 可用性问题排查：前端正常、Agent2 正常监听，但监测页仍然提示 “Zabbix agent is not available”。最终定位到 Docker 容器与宿主机 Agent2 的访问控制配置不匹配。'
 image: ''

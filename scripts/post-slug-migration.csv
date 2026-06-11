@@ -1,0 +1,40 @@
+old_url_slug,new_url_slug,published,title,path
+20260308-02,blog-url-slug-refactor,2026-03-08,把文章 URL 从目录里拆出来,src/content/posts/2026-03-08-把文章 URL 从目录里拆出来/index.md
+20260308-01,blog-first-night,2026-03-08,折腾这个博客的第一夜,src/content/posts/2026-03-08-折腾这个博客的第一夜/index.md
+20260309-02,zprofile-zshrc-split-optimization,2026-03-09,把 .zprofile 和 .zshrc 拆开之后，我具体做了哪些优化,src/content/posts/2026-03-09-把 .zprofile 和 .zshrc 拆开之后，我具体做了哪些优化/index.md
+20260309-01,zsh-config-cleanup,2026-03-09,把 Zsh 配置从能用整理到顺手,src/content/posts/2026-03-09-把 Zsh 配置从能用整理到顺手/index.md
+20260312-01,cachyos-neovide-lazyvim,2026-03-12,"""在 CachyOS 上从 Neovide 起步，到切到 LazyVim""",src/content/posts/2026-03-12-在 CachyOS 上从 Neovide 起步，到切到 LazyVim/index.md
+20260313-02,opencode-skill-superpowers,2026-03-13,"""初次折腾 OpenCode Skill，为什么我先选了 Superpowers""",src/content/posts/2026-03-13-初次折腾 OpenCode Skill，为什么我先选了 Superpowers/index.md
+20260313-01,php-docker-study-template,2026-03-13,"""给新手准备的 PHP Docker 学习模板：我的 study-php 仓库是怎么用的""",src/content/posts/2026-03-13-给新手准备的 PHP Docker 学习模板：我的 study-php 仓库是怎么用的/index.md
+20260316-02,cachyos-opencode-playwright-cli-skill,2026-03-16,"""在 CachyOS 上给 OpenCode 接 Playwright CLI：为什么我又手动搬了一次 skill""",src/content/posts/2026-03-16-在 CachyOS 上给 OpenCode 接 Playwright CLI：为什么我又手动搬了一次 skill/index.md
+20260316-01,opencode-playwright-mcp-lite-debug,2026-03-16,"""给 OpenCode 接上 Playwright MCP 之后，我为什么又拆成了轻量版和调试版""",src/content/posts/2026-03-16-给 OpenCode 接上 Playwright MCP 之后，我为什么又拆成了轻量版和调试版/index.md
+20260318-01,kubernetes-local-cluster-endeavouros,2026-03-18,"""Kubernetes 第一课：在 EndeavourOS 上搭建本地集群并完成第一次部署排障""",src/content/posts/2026-03-18-从 Docker 到 Kubernetes：我在 Arch Linux 上搭起第一个 K8s 集群/index.md
+20260320-02,linux-mint-python-package-management-repair,2026-03-20,"""Linux Mint 22 上 Python3 包管理崩掉之后，我是怎么一步步救回来的""",src/content/posts/2026-03-20-Linux Mint 22 上 Python3 包管理崩掉之后，我是怎么一步步救回来的/index.md
+20260320-01,opencode-openai-login-provider-fix,2026-03-20,"""OpenCode 登录 OpenAI 时，浏览器授权成功了，为什么 provider 还是不出现？""",src/content/posts/2026-03-20-OpenCode 登录 OpenAI 时，浏览器授权成功了，为什么 provider 还是不出现？/index.md
+20260323-01,openclaw-skills-coding-agent-zellij,2026-03-23,"""一晚上把 OpenClaw 折腾顺手：我是怎么把 skills、gog、coding-agent 和 zellij 一路修通的""",src/content/posts/2026-03-23-一晚上把 OpenClaw 折腾顺手：我是怎么把 skills、gog、coding-agent 和 zellij 一路修通的/index.md
+20260324-01,zabbix-server-docker-agent2-unavailable,2026-03-24,"""Zabbix server 在 Docker、agent2 在宿主机时，为什么会报 Zabbix agent is not available""",src/content/posts/2026-03-24-Zabbix server 在 Docker、agent2 在宿主机时，为什么会报 Zabbix agent is not available/index.md
+20260324-02,zabbix-server-vm-docker-agent2-host,2026-03-24,"""为什么我把 Zabbix Server 放进独立 VM 的 Docker，而把 agent2 留在宿主机上""",src/content/posts/2026-03-24-为什么我把 Zabbix Server 放进独立 VM 的 Docker，而把 agent2 留在宿主机上/index.md
+20260325-02,zabbix-linux-agent-active-agent2,2026-03-25,"""Zabbix 里 Linux by Zabbix agent、active、agent 与 agent2 到底有什么区别""",src/content/posts/2026-03-25-Zabbix 里 Linux by Zabbix agent、active、agent 与 agent2 到底有什么区别/index.md
+20260325-01,openclaw-opencode-acp-backend-troubleshooting,2026-03-25,"""为什么 opencode 明明装好了，OpenClaw 却还是拉不起来：一次 ACP backend 排障记录""",src/content/posts/2026-03-25-为什么 opencode 明明装好了，OpenClaw 却还是拉不起来：一次 ACP backend 排障记录/index.md
+20260407-01,lwe-linux-install-config-guide,2026-04-07,"""给 Linux 用户的 LWE 上手指南：安装、配置到日常使用""",src/content/posts/2026-04-07-给 Linux 用户的 LWE 上手指南：安装、配置到日常使用/index.md
+20260408-02,openclaw-fnm-system-environment,2026-04-08,"""OpenClaw 为什么吃不到我的系统环境：从 fnm 到可复用环境文件""",src/content/posts/2026-04-08-OpenClaw 为什么吃不到我的系统环境：从 fnm 到可复用环境文件/index.md
+20260408-01,openclaw-telegram-gateway-recovery,2026-04-08,"""一晚把 OpenClaw 修顺：从 Telegram 扩展缺文件到 gateway 真正恢复""",src/content/posts/2026-04-08-一晚把 OpenClaw 修顺：从 Telegram 扩展缺文件到 gateway 真正恢复/index.md
+20260411-01,tailscale-v2raya-dns-takeover,2026-04-11,"""为什么我最后不改 v2rayA，而是让 Tailscale 放弃接管 DNS""",src/content/posts/2026-04-11-为什么我最后不改 v2rayA，而是让 Tailscale 放弃接管 DNS/index.md
+20260412-02,grafana-prometheus-introduction,2026-04-12,"""Grafana 是什么，为什么它总和 Prometheus 一起出现：给新手的一篇入门指南""",src/content/posts/2026-04-12-Grafana 是什么，为什么它总和 Prometheus 一起出现：给新手的一篇入门指南/index.md
+20260412-04,prometheus-grafana-linux-monitoring-dashboard,2026-04-12,"""Prometheus + Grafana 实战入门：从一台 Linux 服务器开始搭自己的监控面板""",src/content/posts/2026-04-12-Prometheus + Grafana 实战入门：从一台 Linux 服务器开始搭自己的监控面板/index.md
+20260412-01,prometheus-monitoring-introduction,2026-04-12,"""Prometheus 是什么，为什么大家都用它做监控：给新手的一篇入门指南""",src/content/posts/2026-04-12-Prometheus 是什么，为什么大家都用它做监控：给新手的一篇入门指南/index.md
+20260412-03,ssh-key-passwordless-server-login,2026-04-12,"""如何配置 SSH 密钥，实现无密码远程登录服务器：给自己留一份不容易忘的笔记""",src/content/posts/2026-04-12-如何配置 SSH 密钥，实现无密码远程登录服务器：给自己留一份不容易忘的笔记/index.md
+20260413-03,ansible-deploy-usage-guide,2026-04-13,"""Ansible 是什么，应该怎么部署和使用：一篇适合新手照着操作的实战入门""",src/content/posts/2026-04-13-Ansible 是什么，应该怎么部署和使用：一篇适合新手照着操作的实战入门/index.md
+20260413-04,terraform-iac-introduction,2026-04-13,"""Terraform 是什么，应该怎么部署和使用：一篇适合新手理解 IaC 的入门教程""",src/content/posts/2026-04-13-Terraform 是什么，应该怎么部署和使用：一篇适合新手理解 IaC 的入门教程/index.md
+20260413-01,systemd-service-unit-file-guide,2026-04-13,"""systemd 配置文件怎么写：从 service 文件结构到常见字段的详细入门""",src/content/posts/2026-04-13-systemd 配置文件怎么写：从 service 文件结构到常见字段的详细入门/index.md
+20260413-02,devops-practice-server-monitoring-logging,2026-04-13,"""我准备怎么用一台服务器做完一次运维实践任务：从环境准备到监控与日志的落地路线""",src/content/posts/2026-04-13-从零做完一次运维实践任务：用 Ansible、Terraform、k3s、Prometheus、Grafana 和 ELK 搭一套最小实验环境/index.md
+20260416-01,opencode-project-skills-grade-workflow,2026-04-16,"""为什么我的 OpenCode 项目内 skills 不生效：从 skill 目录、/grade 命令到评分工作流接通的排查记录""",src/content/posts/2026-04-16-为什么我的 OpenCode 项目内 skills 不生效：从 skill 目录、-grade 命令到评分工作流接通的排查记录/index.md
+20260418-01,git-ssh-key-github-guide,2026-04-18,"""Git SSH 密钥怎么配：从生成密钥到让 GitHub 走 SSH 的一份完整上手教程""",src/content/posts/2026-04-18-Git SSH 密钥怎么配：从生成密钥到让 GitHub 走 SSH 的一份完整上手教程/index.md
+20260420-01,helm-kubernetes-beginner-guide,2026-04-20,"""Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门""",src/content/posts/2026-04-20-Helm 是什么，应该怎么安装和使用：给 Kubernetes 新手的一篇实战入门/index.md
+20260420-02,kube-prometheus-stack-helm-k3s-proxy-fix,2026-04-20,"""为什么我的 kube-prometheus-stack 总装不上：从 Helm 报错到 k3s 代理配置的排查记录""",src/content/posts/2026-04-20-为什么我的 kube-prometheus-stack 总装不上：从 Helm 报错到 k3s 代理配置的排查记录/index.md
+20260421-02,k3s-loki-grafana-log-query-guide,2026-04-21,"""如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践""",src/content/posts/2026-04-21-如何在 k3s 里部署和使用 Loki：从日志采集到 Grafana 查询的一次完整入门/index.md
+20260421-01,elk-efk-loki-logging-stack-comparison,2026-04-21,"""ELK、EFK 和 Loki 分别是什么：面向日志系统选型的一篇横向对比""",src/content/posts/2026-04-21-如何在单机 k3s 里部署一套最小可用的 EFK：从 Elasticsearch、Fluent Bit 到 Kibana 的实战记录/index.md
+20260502-01,devops-shell-interview-exercises,2026-05-02,"""DevOps 实习面试常见 Shell 练习题 12 则""",src/content/posts/2026-05-02-DevOps 实习面试常见 Shell 练习题 12 则/index.md
+20260502-02,windows-flclash-download-usage,2026-05-02,"""Windows 上如何下载和使用 FlClash""",src/content/posts/2026-05-02-Windows 上如何下载和使用 FlClash/index.md
+20260506-02,headscale-fedora-dns-latency-fix,2026-05-06,"""Headscale 一次 DNS 误接管排错：Fedora 接入后延迟异常的定位与修复""",src/content/posts/2026-05-06-Headscale 一次 DNS 误接管排错：Fedora 接入后延迟异常的定位与修复/index.md
+20260506-01,kind-kube-prometheus-stack-monitoring-guide,2026-05-06,"""如何在 kind 中部署 kube-prometheus-stack：用 Helm 搭一套可访问的 Grafana、Prometheus 和 Alertmanager 练习环境""",src/content/posts/2026-05-06-kind-kube-prometheus-stack-monitoring/index.md

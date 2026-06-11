@@ -1,6 +1,6 @@
 ---
 title: "如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践"
-urlSlug: '20260421-02'
+urlSlug: 'k3s-loki-grafana-log-query-guide'
 published: 2026-04-21
 description: '基于 Grafana 官方当前路线，在单机 k3s 中用 Helm 部署 Loki，并用 Grafana Alloy 代替已停止更新的 Promtail 完成日志采集，最后在 Grafana 中查询 Pod 日志。'
 image: ''

@@ -1,6 +1,6 @@
 ---
 title: 把 .zprofile 和 .zshrc 拆开之后，我具体做了哪些优化
-urlSlug: '20260309-02'
+urlSlug: 'zprofile-zshrc-split-optimization'
 published: 2026-03-09
 description: 和上一篇不同，这一篇不再讲“为什么拆分”，而是把我最终采用的 zprofile 与 zshrc 配置逐段拆开，具体解释路径去重、NVM 懒加载、SSH Agent 单例、补全缓存编译这些优化到底在解决什么问题。
 image: ''

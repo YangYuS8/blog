@@ -44,10 +44,36 @@ This script will:
 
 - create a dated directory under `src/content/posts/`
 - create `index.md`
-- generate a sequential `urlSlug`
-- avoid directory collisions
+- generate a human-readable kebab-case `urlSlug` from the title by default
+- avoid `urlSlug` and directory collisions
 
-Do **not** invent `urlSlug` manually unless the user explicitly asks for a custom slug.
+For SEO and readability, post URLs should be meaningful slugs, not pure date/sequence IDs.
+
+Preferred examples:
+
+- `k3s-loki-grafana-log-query-guide`
+- `opencode-project-skills-grade-workflow`
+- `headscale-fedora-dns-latency-fix`
+
+Avoid:
+
+- `20260421-02`
+- `post-1`
+- opaque internal IDs
+
+If the title is Chinese or otherwise cannot produce a clear ASCII slug, pass an explicit slug:
+
+```bash
+pnpm new-post "文章标题" --slug meaningful-english-kebab-slug
+```
+
+If the post is written by someone other than the site owner, pass an explicit author:
+
+```bash
+pnpm new-post "文章标题" --slug meaningful-slug --author "Sakurakouji Luna"
+```
+
+Do **not** reintroduce date-only `urlSlug` values unless the user explicitly asks for an archival compatibility experiment.
 
 ## 4. Frontmatter contract
 
@@ -60,6 +86,7 @@ urlSlug:
 published:
 description:
 image:
+author:
 tags:
 category:
 draft:
@@ -71,6 +98,7 @@ Notes:
 
 - Default language is usually `zh_CN`
 - `draft` is usually `false` unless the user explicitly wants a draft
+- `author` may be empty for the site owner; set it explicitly for guest/agent-authored posts
 - `description` should be meaningful, not placeholder text
 - `tags` should be specific and helpful for archive/search views
 - `category` should be short and consistent with existing posts

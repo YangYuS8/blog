@@ -1,6 +1,6 @@
 ---
 title: "给 OpenCode 接上 Playwright MCP 之后，我为什么又拆成了轻量版和调试版"
-urlSlug: '20260316-01'
+urlSlug: 'opencode-playwright-mcp-lite-debug'
 published: 2026-03-16
 description: '记录我在 CachyOS 上给 OpenCode 接 Playwright MCP 的过程：先查官方文档，再落地 headless 配置，接着做一次真实验证，最后又把它拆成了日常用的轻量版和排查问题用的调试版。'
 image: ''

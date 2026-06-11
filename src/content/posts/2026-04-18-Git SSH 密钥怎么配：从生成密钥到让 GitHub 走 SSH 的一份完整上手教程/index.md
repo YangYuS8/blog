@@ -1,6 +1,6 @@
 ---
 title: "Git SSH 密钥怎么配：从生成密钥到让 GitHub 走 SSH 的一份完整上手教程"
-urlSlug: '20260418-01'
+urlSlug: 'git-ssh-key-github-guide'
 published: 2026-04-18
 description: '一篇偏上手向的 Git SSH 配置教程：从检查本机现有密钥、生成新的 SSH key、添加到 ssh-agent、上传公钥到 GitHub，再到测试 SSH 是否生效，以及把仓库远程地址切换成 SSH。'
 image: ''

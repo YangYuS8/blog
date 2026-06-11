@@ -1,6 +1,6 @@
 ---
 title: "初次折腾 OpenCode Skill，为什么我先选了 Superpowers"
-urlSlug: '20260313-02'
+urlSlug: 'opencode-skill-superpowers'
 published: 2026-03-13
 description: '记录我第一次认真了解 OpenCode skill 生态的过程：vercel-labs/skills 到底是干什么的、在 CachyOS 上怎么把 skill 接进 OpenCode，以及我为什么最后没有一口气装很多，而是先从 superpowers 开始。'
 image: ''

@@ -1,6 +1,6 @@
 ---
 title: "OpenClaw 为什么吃不到我的系统环境：从 fnm 到可复用环境文件"
-urlSlug: '20260408-02'
+urlSlug: 'openclaw-fnm-system-environment'
 published: 2026-04-08
 description: '记录一次很典型的环境继承排障：OpenClaw 执行命令时吃不到我在 shell 里通过 fnm 和 .bashrc 配好的 node、pnpm、代理环境，最后改成显式可 source 的环境文件解决。'
 image: ''

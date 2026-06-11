@@ -1,6 +1,6 @@
 ---
 title: "Zabbix 里 Linux by Zabbix agent、active、agent 与 agent2 到底有什么区别"
-urlSlug: '20260325-02'
+urlSlug: 'zabbix-linux-agent-active-agent2'
 published: 2026-03-25
 description: '系统梳理 Zabbix 中 Linux by Zabbix agent、Linux by Zabbix agent active、zabbix-agent 与 zabbix-agent2 这四个概念的区别，以及实际部署时该如何选择。'
 image: ''

@@ -1,6 +1,6 @@
 ---
 title: "一晚上把 OpenClaw 折腾顺手：我是怎么把 skills、gog、coding-agent 和 zellij 一路修通的"
-urlSlug: '20260323-01'
+urlSlug: 'openclaw-skills-coding-agent-zellij'
 published: 2026-03-23
 description: '记录我一晚上把 OpenClaw 从“能跑但不顺手”折腾到“skills 基本就绪”的过程：清理重复 skill、切回官方内置版本、修通 gog、把 coding-agent 从 blocked 变成 ready，最后再换掉 tmux 改用 zellij。'
 image: ''

@@ -1,6 +1,6 @@
 ---
 title: "Kubernetes 第一课：在 EndeavourOS 上搭建本地集群并完成第一次部署排障"
-urlSlug: '20260318-01'
+urlSlug: 'kubernetes-local-cluster-endeavouros'
 published: 2026-03-18
 description: '记录我在 EndeavourOS 上学习 Kubernetes 的第一课：从 kind 建集群、Deployment 部署 nginx，到排查镜像拉取失败、修正 Service 端口映射、扩容、滚动更新与回滚。'
 image: ''

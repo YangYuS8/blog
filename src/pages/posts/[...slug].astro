@@ -1,15 +1,16 @@
 ---
 import path from "node:path";
+import GiscusComments from "@components/GiscusComments.astro";
 import License from "@components/misc/License.astro";
 import Markdown from "@components/misc/Markdown.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getPostPublicSlug, getSortedPosts } from "@utils/content-utils";
+import { getCanonicalPostPath } from "@utils/post-slug-utils";
 import { getDir, getPostUrlBySlug } from "@utils/url-utils";
 import { Icon } from "astro-icon/components";
 import { licenseConfig } from "src/config";
-import GiscusComments from "@components/GiscusComments.astro";
 import ImageWrapper from "../../components/misc/ImageWrapper.astro";
 import PostMetadata from "../../components/PostMeta.astro";
 import { profileConfig, siteConfig } from "../../config";
@@ -24,6 +25,9 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const postAuthor = entry.data.author?.trim() || profileConfig.name;
+const canonicalPath = getCanonicalPostPath(getPostPublicSlug(entry));
+const canonicalUrl = new URL(canonicalPath, Astro.site).toString();
 const { Content, headings } = await entry.render();
 
 const { remarkPluginFrontmatter } = await entry.render();
@@ -36,9 +40,11 @@ const jsonLd = {
 	keywords: entry.data.tags,
 	author: {
 		"@type": "Person",
-		name: profileConfig.name,
+		name: postAuthor,
 		url: Astro.site,
 	},
+	mainEntityOfPage: canonicalUrl,
+	url: canonicalUrl,
 	datePublished: formatDateToYYYYMMDD(entry.data.published),
 	inLanguage: entry.data.lang
 		? entry.data.lang.replace("_", "-")
@@ -46,8 +52,11 @@ const jsonLd = {
 	// TODO include cover image here
 };
 ---
-<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} headings={headings}>
-    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+<MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang={entry.data.lang} setOGTypeArticle={true} author={postAuthor} headings={headings}>
+    <Fragment slot="head">
+        <link rel="canonical" href={canonicalUrl} />
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    </Fragment>
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {}
@@ -107,7 +116,7 @@ const jsonLd = {
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} slug={getPostPublicSlug(entry)} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} slug={getPostPublicSlug(entry)} pubDate={entry.data.published} author={postAuthor} class="mb-6 rounded-xl license-container onload-animation"></License>}
             <GiscusComments />
 
         </div>

@@ -1,6 +1,6 @@
 ---
 title: "为什么我把 Zabbix Server 放进独立 VM 的 Docker，而把 agent2 留在宿主机上"
-urlSlug: '20260324-02'
+urlSlug: 'zabbix-server-vm-docker-agent2-host'
 published: 2026-03-24
 description: '记录一次 Zabbix 部署决策与真实排障经历：为什么最终选择“独立 VM + Docker 部署 Zabbix Server”，而没有把监控中心直接塞进 PVE 宿主机；以及这种架构下，为什么会出现 agent 可用性告警。'
 image: ''

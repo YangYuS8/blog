@@ -1,6 +1,6 @@
 ---
 title: "给新手准备的 PHP Docker 学习模板：我的 study-php 仓库是怎么用的"
-urlSlug: '20260313-01'
+urlSlug: 'php-docker-study-template'
 published: 2026-03-13
 description: '介绍我做的 study-php 模板仓库：它为什么适合新手、LAMP 和 LNMP 两套环境分别解决什么问题，以及你第一次把它跑起来时应该怎么用。'
 image: ''

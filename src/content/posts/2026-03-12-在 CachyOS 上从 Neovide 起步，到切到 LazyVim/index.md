@@ -1,6 +1,6 @@
 ---
 title: "在 CachyOS 上从 Neovide 起步，到切到 LazyVim"
-urlSlug: '20260312-01'
+urlSlug: 'cachyos-neovide-lazyvim'
 published: 2026-03-12
 description: '记录我在 CachyOS 上排查 Neovide 启动报错、重新理解 Neovim 与 lazy.nvim 的关系，最后决定直接切到 LazyVim 的过程，也顺手整理了一份更适合新手回坑的安装与迁移路线。'
 image: ''

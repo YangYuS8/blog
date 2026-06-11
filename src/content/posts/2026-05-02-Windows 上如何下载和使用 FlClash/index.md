@@ -1,6 +1,6 @@
 ---
 title: "Windows 上如何下载和使用 FlClash"
-urlSlug: '20260502-02'
+urlSlug: 'windows-flclash-download-usage'
 published: 2026-05-02
 description: '面向 Windows 用户的 FlClash 上手教程：包括下载、安装、导入配置、启用代理和基础排查。'
 image: ''

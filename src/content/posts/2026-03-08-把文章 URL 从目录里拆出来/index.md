@@ -1,6 +1,6 @@
 ---
 title: 把文章 URL 从目录里拆出来
-urlSlug: '20260308-02'
+urlSlug: 'blog-url-slug-refactor'
 published: 2026-03-08
 description: 文章目录想保留日期加中文标题的可读性，URL 又想稳定、简短、可控，于是我把这两件事彻底拆开了，顺手也把路由、RSS 和归档类型问题一起理顺。
 image: ''

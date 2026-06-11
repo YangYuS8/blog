@@ -1,6 +1,6 @@
 ---
 title: "为什么我的 OpenCode 项目内 skills 不生效：从 skill 目录、/grade 命令到评分工作流接通的排查记录"
-urlSlug: '20260416-01'
+urlSlug: 'opencode-project-skills-grade-workflow'
 published: 2026-04-16
 description: '一篇实践记录：我在给 OpenCode 搭一套基于 issue 的自动评分流程时，为什么最开始明明写了 skill 却不生效，后来又为什么发现 /grade 也不会自己出现，以及最后是怎么把项目内 skills、commands 和评分仓库结构理顺的。'
 image: ''

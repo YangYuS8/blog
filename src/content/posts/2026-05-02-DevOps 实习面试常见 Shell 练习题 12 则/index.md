@@ -1,6 +1,6 @@
 ---
 title: "DevOps 实习面试常见 Shell 练习题 12 则"
-urlSlug: '20260502-01'
+urlSlug: 'devops-shell-interview-exercises'
 published: 2026-05-02
 description: '整理 12 道适合 DevOps 实习面试准备阶段练习的 Shell 题目，只给题目与要求，不展开答案。'
 image: ''
