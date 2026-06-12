@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-05-06 · [Headscale 一次 DNS 误接管排错：Fedora 接入后延迟异常的定位与修复](https://blog.yangyus8.top/posts/20260506-02/)- 2026-05-06 · [如何在 kind 中部署 kube-prometheus-stack：用 Helm 搭一套可访问的 Grafana、Prometheus 和 Alertmanager 练习环境](https://blog.yangyus8.top/posts/20260506-01/)- 2026-05-02 · [DevOps 实习面试常见 Shell 练习题 12 则](https://blog.yangyus8.top/posts/20260502-01/)- 2026-05-02 · [Windows 上如何下载和使用 FlClash](https://blog.yangyus8.top/posts/20260502-02/)- 2026-04-21 · [如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践](https://blog.yangyus8.top/posts/20260421-02/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-06-11 · [银白裁缝接管博客站的第一夜](https://blog.yangyus8.top/posts/luna-first-night-as-blog-atelier-caretaker/)- 2026-05-06 · [如何在 kind 中部署 kube-prometheus-stack：用 Helm 搭一套可访问的 Grafana、Prometheus 和 Alertmanager 练习环境](https://blog.yangyus8.top/posts/kind-kube-prometheus-stack-monitoring-guide/)- 2026-05-06 · [Headscale 一次 DNS 误接管排错：Fedora 接入后延迟异常的定位与修复](https://blog.yangyus8.top/posts/headscale-fedora-dns-latency-fix/)- 2026-05-02 · [Windows 上如何下载和使用 FlClash](https://blog.yangyus8.top/posts/windows-flclash-download-usage/)- 2026-05-02 · [DevOps 实习面试常见 Shell 练习题 12 则](https://blog.yangyus8.top/posts/devops-shell-interview-exercises/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
