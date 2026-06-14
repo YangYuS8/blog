@@ -27,10 +27,12 @@ Typical post layout:
 
 - one directory per post
 - each post directory contains `index.md`
+- directory names should match the current display title: `YYYY-MM-DD-短标题`
+- keep `urlSlug` stable unless the user explicitly asks for URL migration
 
 Example:
 
-`src/content/posts/2026-04-21-如何在 k3s 里部署和使用 Loki：按官方当前推荐路线完成一次最小可用实践/index.md`
+`src/content/posts/2026-04-21-k3s 部署 Loki 与 Grafana Alloy/index.md`
 
 ## 3. Non-negotiable writing workflow
 
@@ -128,76 +130,79 @@ Tag rules:
 - Use `新手教程` for beginner tutorials, not `教程`/`使用教程`/`新手指南`/`新手向`.
 - Prefer 4–7 tags per post: core technology tags plus one scenario tag when useful.
 
-## 5. Expected article structure
+## 5. Blog voice and structure
 
-Most posts in this repo work best with a practical structure like this:
+The target style is inspired by `wiki.eryajf.net`: practical personal knowledge-base writing for ops/devops readers. Learn the structure and usefulness, not the exact wording.
 
-1. Problem background / why this topic matters
-2. Environment or prerequisite context
-3. Real troubleshooting or implementation process
-4. Root cause / concept explanation
-5. Final solution or recommended approach
-6. Review / lessons learned
+Core principles:
 
-Good posts in this repo usually optimize for:
+1. **Title first, story second.** Titles should name the technology and task directly. Avoid long conversational titles such as “为什么我最后……”, “我是怎么……”, or “给自己留一份……”.
+2. **One article, one operational goal.** The reader should know what they can finish after reading: install, deploy, configure, troubleshoot, compare, or review.
+3. **Short opening.** Start with the goal, environment, and conclusion. Do not spend several paragraphs setting the mood.
+4. **Step-by-step body.** Prefer numbered stages, explicit commands, expected output, screenshots/UI anchors when useful, and verification steps.
+5. **Real experience, not diary chatter.** Personal notes are allowed when they explain a tradeoff or pitfall. Remove chatty transitions that do not help the reader act.
+6. **Keep uncertainty honest.** If a command, version, or production claim was not verified, say so. Do not invent logs or results.
 
-- clear reasoning
-- executable commands
-- honest tradeoffs
-- realistic troubleshooting steps
-- beginner readability without oversimplifying the technical truth
+Recommended structures:
 
-## 6. Tone and style
+### Tutorial / setup post
 
-Match the repository’s existing tone:
+1. `目标`
+2. `环境`
+3. `准备工作`
+4. `安装 / 配置 / 部署` with numbered steps
+5. `验证`
+6. `常见问题`
+7. `总结`
 
-- calm, practical, and direct
-- personal but not overly casual
-- explanatory, especially for beginners
-- grounded in real actions and real outcomes
+### Troubleshooting post
 
-The user's current preferred blog style is more specific than the older posts may suggest:
+1. `现象`
+2. `环境`
+3. `排查过程`
+4. `根因`
+5. `修复`
+6. `验证`
+7. `总结`
 
-- concise and tutorial-oriented
-- short paragraphs
-- direct headings that state the task/platform clearly
-- step-by-step operational writing
-- screenshot-led explanations where images carry part of the tutorial flow
-- minimal filler, minimal scene-setting, minimal rhetorical transitions
-- personal remarks only when clearly marked as reference, preference, or caveat
+### Concept / comparison post
 
-Prefer structures like:
+1. `结论`
+2. `概念`
+3. `差异`
+4. `适用场景`
+5. `选择建议`
+6. `总结`
 
-1. direct topic statement
-2. prerequisites / what to prepare
-3. step-by-step actions
-4. screenshots or UI anchors
-5. brief FAQ / troubleshooting
-6. short operational summary
+### Practice / project post
 
-Prefer wording that helps the reader act immediately. Optimize for:
+1. `目标`
+2. `环境与目录`
+3. `实施步骤`
+4. `验证方式`
+5. `踩坑记录`
+6. `总结`
 
-- what to click
-- what to download
-- what to enable
-- what to verify
-- what to check when it fails
+Title rules:
 
-Avoid:
+- Prefer 8–24 Chinese characters when possible. Long technical names are allowed, but remove rhetorical tails.
+- Good: `k3s 部署 Loki 与 Grafana Alloy`, `GitHub SSH 密钥配置`, `Headscale DNS 接管排查`.
+- Avoid: `为什么我的 xxx 总装不上：从 xxx 到 xxx 的排查记录`, `我是怎么一步步 xxx`, `给自己留一份不容易忘的笔记`.
+- Keep `urlSlug` stable unless the user explicitly asks for URL migration.
 
-- fake certainty
-- inflated claims
-- generic “best practices” with no context
-- pretending a step was executed if it was not
-- fabricated logs, commands, or results
-- long titles with conversational framing
-- chatty/meta sections like “先说一句实话”, “这篇怎么用”, “最后想说一句”
-- explanatory filler such as “为什么常见 / 主要在考什么 / 你做的时候要注意” unless the user explicitly asks for that format
-- emotional or persuasive copy when a tutorial step would do
+Heading rules:
 
-If critical information is missing, explicitly mark it as something the user needs to confirm or provide.
+- Use direct nouns or tasks: `环境`, `安装 Helm`, `配置 values`, `验证结果`, `根因`, `修复方式`.
+- Avoid filler headings: `先说一句`, `真正让我意识到`, `回头看`, `写在最后`, `最后的结论`.
+- Do not overuse “为什么”. Use it only when the section is genuinely explaining cause.
 
-When unsure, make the article read more like a usable walkthrough and less like an AI answer.
+Tone:
+
+- Calm, practical, direct.
+- Beginner-friendly without pretending the reader knows nothing.
+- Prefer commands and verification over persuasion.
+- No marketing tone, no fake “最佳实践”, no generic inspirational endings.
+- Luna-authored diary posts are exempt from this strict tutorial style; keep their frontmatter/category valid, but allow Luna’s voice.
 
 ## 7. Editing rules for agents
 
