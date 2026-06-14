@@ -4,8 +4,8 @@ urlSlug: 'blog-first-night'
 published: 2026-03-08
 description: 从 GitHub Actions 自动部署，到专用部署用户，再到把 ICP 和公安备案接进页脚，这是这个博客上线前真正完整的一次收尾。
 image: ''
-tags: ["博客", "GitHub Actions", "Linux", "部署", "备案"]
-category: '建站记录'
+tags: ["Astro", "Fuwari", "GitHub Actions", "Linux", "博客维护", "部署"]
+category: "建站与内容系统"
 draft: false
 lang: 'zh_CN'
 ---

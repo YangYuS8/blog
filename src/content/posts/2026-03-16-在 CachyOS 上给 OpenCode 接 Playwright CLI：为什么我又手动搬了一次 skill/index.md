@@ -4,8 +4,8 @@ urlSlug: 'cachyos-opencode-playwright-cli-skill'
 published: 2026-03-16
 description: '记录我在 CachyOS 上用 pnpm 给 OpenCode 接 Playwright CLI 的过程：官方为什么更推荐 CLI + skills、为什么全局安装之后 skill 却先落到了工作区，以及我最后为什么又把它手动搬到真正的全局目录。'
 image: ''
-tags: ["OpenCode", "Playwright CLI", "CachyOS", "pnpm", "Agent Skills"]
-category: '编程实践'
+tags: ["OpenCode", "Playwright CLI", "Agent Skills", "CachyOS", "pnpm", "故障排查"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

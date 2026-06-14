@@ -4,8 +4,8 @@ urlSlug: 'blog-url-slug-refactor'
 published: 2026-03-08
 description: 文章目录想保留日期加中文标题的可读性，URL 又想稳定、简短、可控，于是我把这两件事彻底拆开了，顺手也把路由、RSS 和归档类型问题一起理顺。
 image: ''
-tags: ["博客", "Astro", "URL", "内容系统", "TypeScript"]
-category: '建站记录'
+tags: ["Astro", "Fuwari", "URL", "内容系统", "TypeScript", "SEO"]
+category: "建站与内容系统"
 draft: false
 lang: 'zh_CN'
 ---

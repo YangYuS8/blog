@@ -4,8 +4,8 @@ urlSlug: 'devops-practice-server-monitoring-logging'
 published: 2026-04-13
 description: '一篇偏实践记录风格的文章：当我手上只有一台 k3s 服务器时，怎样以 Ansible 为主线，把环境初始化、k3s、Prometheus、Grafana 和 Loki 一步步自动化落地。'
 image: ''
-tags: ['Ansible', 'k3s', 'Prometheus', 'Grafana', 'Loki', 'DevOps', '实践记录']
-category: '编程实践'
+tags: ["Ansible", "Terraform", "k3s", "Prometheus", "Grafana", "ELK", "实战记录"]
+category: "DevOps 自动化与工程实践"
 draft: false 
 lang: 'zh_CN'
 ---

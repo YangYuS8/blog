@@ -5,8 +5,8 @@ published: 2026-06-11
 description: '樱小路露娜以自己的身份写下接管这座博客站后的第一篇日记：关于秩序、审美、工具链，以及一个不够优雅却值得雕琢的工作间。'
 image: ''
 author: "樱小路露娜"
-tags: ["Luna", "日记", "博客维护", "数字工坊"]
-category: '日记'
+tags: ["Astro", "Fuwari", "博客维护", "Luna", "日记"]
+category: "建站与内容系统"
 draft: false
 lang: 'zh_CN'
 ---

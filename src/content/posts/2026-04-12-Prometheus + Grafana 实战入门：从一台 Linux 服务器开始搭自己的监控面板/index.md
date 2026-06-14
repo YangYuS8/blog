@@ -4,8 +4,8 @@ urlSlug: 'prometheus-grafana-linux-monitoring-dashboard'
 published: 2026-04-12
 description: '一篇偏实战的 Prometheus + Grafana 入门教程：从 node_exporter 开始，到 Prometheus 抓指标，再到 Grafana 出图，尽量按新手可以照着做的顺序来写。'
 image: ''
-tags: ['Prometheus', 'Grafana', '监控', 'Linux', 'DevOps', '实战教程']
-category: '软件教程'
+tags: ["Prometheus", "Grafana", "监控", "Linux", "DevOps", "实战记录"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

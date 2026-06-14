@@ -4,8 +4,8 @@ urlSlug: 'grafana-prometheus-introduction'
 published: 2026-04-12
 description: '一篇面向新手的 Grafana 入门文章：它到底是做什么的、为什么总和 Prometheus 搭配出现，以及新手应该怎么理解它在监控体系里的位置。'
 image: ''
-tags: ['Grafana', 'Prometheus', '监控', 'DevOps', '新手指南']
-category: '软件教程'
+tags: ["Grafana", "Prometheus", "监控", "DevOps", "新手教程"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

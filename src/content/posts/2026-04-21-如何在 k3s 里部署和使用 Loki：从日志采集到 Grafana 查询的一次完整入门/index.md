@@ -4,8 +4,8 @@ urlSlug: 'k3s-loki-grafana-log-query-guide'
 published: 2026-04-21
 description: '基于 Grafana 官方当前路线，在单机 k3s 中用 Helm 部署 Loki，并用 Grafana Alloy 代替已停止更新的 Promtail 完成日志采集，最后在 Grafana 中查询 Pod 日志。'
 image: ''
-tags: ['Loki', 'Grafana', 'Grafana Alloy', 'Kubernetes', 'k3s', '日志', 'Helm', '实战']
-category: '编程实践'
+tags: ["k3s", "Kubernetes", "Loki", "Grafana", "Grafana Alloy", "Helm", "日志"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

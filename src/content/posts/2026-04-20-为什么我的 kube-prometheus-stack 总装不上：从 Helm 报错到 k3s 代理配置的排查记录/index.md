@@ -4,8 +4,8 @@ urlSlug: 'kube-prometheus-stack-helm-k3s-proxy-fix'
 published: 2026-04-20
 description: '记录一次在 k3s 上部署 kube-prometheus-stack 的真实排障过程：为什么一开始我以为是 Ansible 或 Helm 命令有问题，后来才发现真正的根因是 k3s/containerd 没有吃到代理环境，导致连 pause 镜像都拉不下来。'
 image: ''
-tags: ['k3s', 'Helm', 'Prometheus', 'Grafana', 'Ansible', 'Kubernetes', '问题排查']
-category: '问题排查'
+tags: ["k3s", "Kubernetes", "Helm", "kube-prometheus-stack", "Prometheus", "Grafana", "故障排查"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

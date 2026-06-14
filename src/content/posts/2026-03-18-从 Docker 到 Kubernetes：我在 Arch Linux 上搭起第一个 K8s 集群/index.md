@@ -4,8 +4,8 @@ urlSlug: 'kubernetes-local-cluster-endeavouros'
 published: 2026-03-18
 description: '记录我在 EndeavourOS 上学习 Kubernetes 的第一课：从 kind 建集群、Deployment 部署 nginx，到排查镜像拉取失败、修正 Service 端口映射、扩容、滚动更新与回滚。'
 image: ''
-tags: ['kubernetes', 'k8s', 'docker', 'kind', 'kubectl', 'endeavouros', 'archlinux']
-category: '云原生'
+tags: ["Docker", "Kubernetes", "kind", "kubectl", "Arch Linux", "实战记录"]
+category: "云原生与容器"
 draft: false 
 lang: 'zh_CN'
 ---

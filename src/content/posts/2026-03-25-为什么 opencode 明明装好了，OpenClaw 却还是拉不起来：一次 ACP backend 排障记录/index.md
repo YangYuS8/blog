@@ -4,8 +4,8 @@ urlSlug: 'openclaw-opencode-acp-backend-troubleshooting'
 published: 2026-03-25
 description: '记录一次 OpenClaw ACP 排障：为什么 opencode 命令本身可用，但通过 OpenClaw 的 ACP runtime 调用时仍然报错；最后如何定位到 acpx 插件和 acp 顶层配置缺失的问题。'
 image: ''
-tags: ['OpenClaw', 'ACP', 'opencode', 'Linux', '故障排查']
-category: '编程实践'
+tags: ["OpenClaw", "OpenCode", "ACP", "Linux", "故障排查"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

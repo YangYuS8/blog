@@ -4,8 +4,8 @@ urlSlug: 'openclaw-telegram-gateway-recovery'
 published: 2026-04-08
 description: '记录一次把 OpenClaw 从异常状态修回正常的过程：Telegram 扩展加载缺文件、gateway service 残留旧版本、GEMINI_API_KEY 没进 systemd 环境，最后把整条链路理顺。'
 image: ''
-tags: ['OpenClaw', 'Telegram', 'systemd', 'gateway', 'Gemini', 'Linux']
-category: '问题排查'
+tags: ["OpenClaw", "Telegram", "systemd", "Gateway", "Gemini", "Linux", "故障排查"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

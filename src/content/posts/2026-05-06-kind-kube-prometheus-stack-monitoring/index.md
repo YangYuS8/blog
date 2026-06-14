@@ -4,8 +4,8 @@ urlSlug: 'kind-kube-prometheus-stack-monitoring-guide'
 published: 2026-05-06
 description: '一篇按步骤展开的 kind 监控实战教程：创建多节点集群、安装 ingress-nginx、部署 kube-prometheus-stack、配置 Grafana/Prometheus/Alertmanager 访问入口，并用 ServiceMonitor 接入一个示例应用。'
 image: ''
-tags: ['kind', 'Kubernetes', 'Helm', 'Prometheus', 'Grafana', 'Alertmanager', '教程']
-category: '软件教程'
+tags: ["kind", "Kubernetes", "Helm", "kube-prometheus-stack", "Prometheus", "Grafana", "Alertmanager"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

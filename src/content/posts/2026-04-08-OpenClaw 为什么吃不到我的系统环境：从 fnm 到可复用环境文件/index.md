@@ -4,8 +4,8 @@ urlSlug: 'openclaw-fnm-system-environment'
 published: 2026-04-08
 description: '记录一次很典型的环境继承排障：OpenClaw 执行命令时吃不到我在 shell 里通过 fnm 和 .bashrc 配好的 node、pnpm、代理环境，最后改成显式可 source 的环境文件解决。'
 image: ''
-tags: ['OpenClaw', 'fnm', 'Node.js', 'pnpm', 'shell', '环境变量']
-category: '问题排查'
+tags: ["OpenClaw", "fnm", "Node.js", "pnpm", "Shell", "环境变量", "故障排查"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

@@ -4,8 +4,8 @@ urlSlug: 'zprofile-zshrc-split-optimization'
 published: 2026-03-09
 description: 和上一篇不同，这一篇不再讲“为什么拆分”，而是把我最终采用的 zprofile 与 zshrc 配置逐段拆开，具体解释路径去重、NVM 懒加载、SSH Agent 单例、补全缓存编译这些优化到底在解决什么问题。
 image: ''
-tags: ["Linux", "Zsh", "CachyOS", "性能优化", "Shell"]
-category: '系统折腾'
+tags: ["Linux", "Zsh", "CachyOS", "Shell", "启动优化"]
+category: "Linux 与开发环境"
 draft: false
 lang: 'zh_CN'
 ---

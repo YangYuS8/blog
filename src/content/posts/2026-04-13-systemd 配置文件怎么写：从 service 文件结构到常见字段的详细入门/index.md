@@ -4,8 +4,8 @@ urlSlug: 'systemd-service-unit-file-guide'
 published: 2026-04-13
 description: '一篇面向新手的 systemd 入门文章：service 文件到底是什么、常见段落和字段怎么写、为什么这样写，以及最常见的查看、重载、启动和排错方法。'
 image: ''
-tags: ['systemd', 'Linux', '服务管理', '运维', '教程']
-category: '软件教程'
+tags: ["systemd", "Linux", "服务管理", "运维", "新手教程"]
+category: "DevOps 自动化与工程实践"
 draft: false 
 lang: 'zh_CN'
 ---

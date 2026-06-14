@@ -4,8 +4,8 @@ urlSlug: 'elk-efk-loki-logging-stack-comparison'
 published: 2026-04-21
 description: '直接比较 ELK、EFK 和 Loki 三条常见日志路线，分别说明它们的组成、处理链路、适用场景、优缺点，以及在 Kubernetes 学习和实验环境中应当怎样理解它们的差别。'
 image: ''
-tags: ['ELK', 'EFK', 'Loki', 'Elasticsearch', 'Fluent Bit', 'Logstash', 'Kibana', '日志', 'Kubernetes', 'DevOps']
-category: '软件教程'
+tags: ["k3s", "Kubernetes", "EFK", "Elasticsearch", "Fluent Bit", "Kibana", "日志"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

@@ -4,8 +4,8 @@ urlSlug: 'opencode-openai-login-provider-fix'
 published: 2026-03-20
 description: '记录一次排查 OpenCode 登录 OpenAI 的过程：浏览器授权成功、终端也完成回调，但 provider 依旧不出现。最后确认根因不是 UI 没刷新，而是终端代理变量只配了 ALL_PROXY，没有补齐 HTTP_PROXY 和 HTTPS_PROXY。'
 image: ''
-tags: ["OpenCode", "OpenAI", "OAuth", "Proxy", "Arch Linux", "CachyOS"]
-category: '问题排查'
+tags: ["OpenCode", "OpenAI", "OAuth", "Proxy", "CachyOS", "故障排查"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

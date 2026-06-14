@@ -4,8 +4,8 @@ urlSlug: 'headscale-fedora-dns-latency-fix'
 published: 2026-05-06
 description: '记录一次 headscale 接入排错：Fedora 连上 tailscale/headscale 后访问普通网站延迟异常，最后定位到问题不在路由而在 DNS 被 headscale 全局接管，并通过关闭 override_local_dns 修复。'
 image: ''
-tags: ['headscale', 'tailscale', 'Fedora', 'DNS', '问题排查', 'FlClash']
-category: '问题排查'
+tags: ["Headscale", "Tailscale", "Fedora", "DNS", "FlClash", "故障排查"]
+category: "网络与代理"
 draft: false 
 lang: 'zh_CN'
 ---

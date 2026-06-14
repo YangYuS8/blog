@@ -4,8 +4,8 @@ urlSlug: 'windows-flclash-download-usage'
 published: 2026-05-02
 description: '面向 Windows 用户的 FlClash 上手教程：包括下载、安装、导入配置、启用代理和基础排查。'
 image: ''
-tags: ['Windows', 'FlClash', 'Clash', '代理工具', '教程']
-category: '软件教程'
+tags: ["Windows", "FlClash", "Clash", "代理工具", "新手教程"]
+category: "网络与代理"
 draft: false
 lang: 'zh_CN'
 ---

@@ -4,8 +4,8 @@ urlSlug: 'prometheus-monitoring-introduction'
 published: 2026-04-12
 description: '一篇面向新手的 Prometheus 入门文章：它是什么、能做什么、和传统监控有什么区别，以及最基础的部署和使用方式。'
 image: ''
-tags: ['Prometheus', '监控', 'DevOps', 'Linux', '运维', '新手指南']
-category: '软件教程'
+tags: ["Prometheus", "监控", "DevOps", "Linux", "新手教程"]
+category: "监控与日志"
 draft: false 
 lang: 'zh_CN'
 ---

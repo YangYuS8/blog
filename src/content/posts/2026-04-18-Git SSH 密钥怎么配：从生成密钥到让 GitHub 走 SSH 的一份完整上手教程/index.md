@@ -4,8 +4,8 @@ urlSlug: 'git-ssh-key-github-guide'
 published: 2026-04-18
 description: '一篇偏上手向的 Git SSH 配置教程：从检查本机现有密钥、生成新的 SSH key、添加到 ssh-agent、上传公钥到 GitHub，再到测试 SSH 是否生效，以及把仓库远程地址切换成 SSH。'
 image: ''
-tags: ['Git', 'GitHub', 'SSH', 'Linux', '教程']
-category: '软件教程'
+tags: ["Git", "GitHub", "SSH", "Linux", "新手教程"]
+category: "DevOps 自动化与工程实践"
 draft: false 
 lang: 'zh_CN'
 ---

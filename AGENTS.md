@@ -105,6 +105,29 @@ Notes:
 
 The actual schema lives in `src/content/config.ts`; do not introduce fields that are not supported there unless the schema is updated too.
 
+
+## 4.1 Category and tag taxonomy
+
+Keep `category` narrow and stable. Use exactly one of these categories for normal posts:
+
+- `建站与内容系统` — Astro/Fuwari, blog workflow, URL/SEO/content plumbing
+- `Linux 与开发环境` — Linux desktop/server environment, shell, editors, package/runtime issues
+- `云原生与容器` — Docker, Docker Compose, Kubernetes, k3s, kind, Helm basics
+- `监控与日志` — Prometheus, Grafana, Loki, EFK/ELK, Zabbix, observability
+- `网络与代理` — DNS, proxy tools, Clash/FlClash, Tailscale/Headscale, VPN/routing
+- `AI Agent 工作流` — OpenCode, OpenClaw, Hermes, skills, MCP/ACP, coding-agent workflows
+- `DevOps 自动化与工程实践` — Ansible, Terraform, IaC, systemd, SSH, Git, interview/practice tasks
+
+Do not use broad buckets such as `软件教程`, `问题排查`, `编程实践`, `系统折腾`, `运维实践`, or `日记` as categories for new posts. Use tags like `故障排查`, `新手教程`, `实战记录`, or `日记` instead.
+
+Tag rules:
+
+- Keep official capitalization for technical names: `OpenCode`, `OpenClaw`, `Kubernetes`, `Docker`, `GitHub`, `Tailscale`, `Headscale`, `Node.js`, `systemd`.
+- Use `Kubernetes`, not `k8s`/`kubernetes`; use `OpenCode`, not `opencode`; use `Shell`, not `shell`.
+- Use `故障排查` for troubleshooting posts, not `问题排查`.
+- Use `新手教程` for beginner tutorials, not `教程`/`使用教程`/`新手指南`/`新手向`.
+- Prefer 4–7 tags per post: core technology tags plus one scenario tag when useful.
+
 ## 5. Expected article structure
 
 Most posts in this repo work best with a practical structure like this:

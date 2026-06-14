@@ -4,8 +4,8 @@ urlSlug: 'lwe-linux-install-config-guide'
 published: 2026-04-07
 description: '这是一篇面向普通用户的 LWE 入门文章：从安装前准备、安装方式选择，到首次配置 Steam Web API Key、浏览创意工坊、导入并应用壁纸。'
 image: ''
-tags: ['LWE', 'Linux', 'Wallpaper Engine', 'Steam', '桌面美化', '使用教程']
-category: '软件教程'
+tags: ["Linux", "LWE", "Wallpaper Engine", "Steam", "桌面美化", "新手教程"]
+category: "Linux 与开发环境"
 draft: false
 lang: 'zh_CN'
 ---

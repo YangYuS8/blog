@@ -4,8 +4,8 @@ urlSlug: 'linux-mint-python-package-management-repair'
 published: 2026-03-20
 description: '记录我在 Linux Mint 22 上排查 Python3 核心包损坏的过程：从 dpkg 状态异常、post-installation 脚本报错，到一步步把 python3 和相关依赖恢复到 ii。'
 image: ''
-tags: ['Linux Mint', 'Python3', 'dpkg', 'apt', 'Linux', '故障排查']
-category: '编程实践'
+tags: ["Linux Mint", "Python", "apt", "dpkg", "包管理", "故障排查"]
+category: "Linux 与开发环境"
 draft: false 
 lang: 'zh_CN'
 ---

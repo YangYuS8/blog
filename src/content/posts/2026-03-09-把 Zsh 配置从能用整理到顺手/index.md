@@ -4,8 +4,8 @@ urlSlug: 'zsh-config-cleanup'
 published: 2026-03-09
 description: 和 Gemini 一路讨论之后，我把 CachyOS 上的 Shell 配置重新拆成 zprofile 和 zshrc，也顺手踩了一次 AI 回答里隐藏的 [cite:] 坑，最后才把这套配置真正整理到顺手可用。
 image: ''
-tags: ["Linux", "Zsh", "CachyOS", "Shell", "AI"]
-category: '系统折腾'
+tags: ["Linux", "Zsh", "CachyOS", "Shell", "终端配置"]
+category: "Linux 与开发环境"
 draft: false
 lang: 'zh_CN'
 ---

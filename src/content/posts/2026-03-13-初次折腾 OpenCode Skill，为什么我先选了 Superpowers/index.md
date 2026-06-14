@@ -4,8 +4,8 @@ urlSlug: 'opencode-skill-superpowers'
 published: 2026-03-13
 description: '记录我第一次认真了解 OpenCode skill 生态的过程：vercel-labs/skills 到底是干什么的、在 CachyOS 上怎么把 skill 接进 OpenCode，以及我为什么最后没有一口气装很多，而是先从 superpowers 开始。'
 image: ''
-tags: ["OpenCode", "Agent Skills", "CachyOS", "Superpowers"]
-category: '编程实践'
+tags: ["OpenCode", "Agent Skills", "Superpowers", "CachyOS", "新手教程"]
+category: "AI Agent 工作流"
 draft: false 
 lang: 'zh_CN'
 ---

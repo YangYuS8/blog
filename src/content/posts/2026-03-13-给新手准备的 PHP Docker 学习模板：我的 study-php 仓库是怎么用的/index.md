@@ -4,8 +4,8 @@ urlSlug: 'php-docker-study-template'
 published: 2026-03-13
 description: '介绍我做的 study-php 模板仓库：它为什么适合新手、LAMP 和 LNMP 两套环境分别解决什么问题，以及你第一次把它跑起来时应该怎么用。'
 image: ''
-tags: ["PHP", "Docker", "Docker Compose", "LAMP", "LNMP", "新手向"]
-category: '编程实践'
+tags: ["PHP", "Docker", "Docker Compose", "LAMP", "LNMP", "新手教程"]
+category: "云原生与容器"
 draft: false 
 lang: 'zh_CN'
 ---

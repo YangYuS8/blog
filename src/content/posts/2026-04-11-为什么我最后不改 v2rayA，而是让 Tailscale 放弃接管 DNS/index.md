@@ -4,8 +4,8 @@ urlSlug: 'tailscale-v2raya-dns-takeover'
 published: 2026-04-11
 description: '记录一次在 PVE 宿主机上排查 v2rayA 与 Tailscale 冲突的过程：表面上像是 Tailscale 掉线，实际根因是 DNS 接管冲突。最后我没有继续硬改 v2rayA，而是直接让 Tailscale 放弃接管系统 DNS。'
 image: ''
-tags: ['Tailscale', 'v2rayA', 'PVE', 'Linux', 'DNS', '问题排查']
-category: '问题排查'
+tags: ["Tailscale", "v2rayA", "PVE", "Linux", "DNS", "故障排查"]
+category: "网络与代理"
 draft: false 
 lang: 'zh_CN'
 ---

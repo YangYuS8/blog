@@ -4,8 +4,8 @@ urlSlug: 'ansible-deploy-usage-guide'
 published: 2026-04-13
 description: '一篇面向新手的 Ansible 入门文章：它到底解决什么问题、为什么会比手工登录更高效，以及如何从安装、inventory、ad-hoc 命令到 playbook 一步步开始使用。'
 image: ''
-tags: ['Ansible', 'Linux', '自动化', 'DevOps', '运维', '教程']
-category: '软件教程'
+tags: ["Ansible", "DevOps", "Linux", "自动化", "运维", "新手教程"]
+category: "DevOps 自动化与工程实践"
 draft: false 
 lang: 'zh_CN'
 ---

@@ -4,8 +4,8 @@ urlSlug: 'helm-kubernetes-beginner-guide'
 published: 2026-04-20
 description: '一篇面向新手的 Helm 入门教程：它到底解决什么问题、为什么大家在 Kubernetes 里经常用它、如何安装、怎么添加仓库、搜索 Chart、安装应用、升级、回滚和卸载。'
 image: ''
-tags: ['Helm', 'Kubernetes', 'k3s', 'DevOps', '教程']
-category: '软件教程'
+tags: ["Helm", "Kubernetes", "k3s", "DevOps", "新手教程"]
+category: "云原生与容器"
 draft: false 
 lang: 'zh_CN'
 ---
