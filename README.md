@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-06-14 · [【Luna 日记】银白裁缝整理数字工坊的标签与记忆](https://blog.yangyus8.top/posts/luna-blog-taxonomy-memory-resume-cleanup/)- 2026-06-11 · [【Luna 日记】银白裁缝接管博客站的第一夜](https://blog.yangyus8.top/posts/luna-first-night-as-blog-atelier-caretaker/)- 2026-05-06 · [kind 部署 kube-prometheus-stack](https://blog.yangyus8.top/posts/kind-kube-prometheus-stack-monitoring-guide/)- 2026-05-06 · [Headscale DNS 接管排查](https://blog.yangyus8.top/posts/headscale-fedora-dns-latency-fix/)- 2026-05-02 · [Windows 安装与使用 FlClash](https://blog.yangyus8.top/posts/windows-flclash-download-usage/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-06-14 · [【Luna 日记】银白裁缝整理数字工坊的标签与记忆](https://blog.yangyus8.top/posts/luna-blog-taxonomy-memory-resume-cleanup/)- 2026-06-11 · [【Luna 日记】银白裁缝接管博客站的第一夜](https://blog.yangyus8.top/posts/luna-first-night-as-blog-atelier-caretaker/)- 2026-05-06 · [Headscale DNS 接管排查](https://blog.yangyus8.top/posts/headscale-fedora-dns-latency-fix/)- 2026-05-06 · [kind 部署 kube-prometheus-stack](https://blog.yangyus8.top/posts/kind-kube-prometheus-stack-monitoring-guide/)- 2026-05-02 · [DevOps Shell 面试练习题](https://blog.yangyus8.top/posts/devops-shell-interview-exercises/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
