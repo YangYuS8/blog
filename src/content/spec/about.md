@@ -5,17 +5,27 @@ package main
 
 type Developer struct {
 	Name     string
-	Role     string
-	Location string
 	Focus    []string
+	Building []string
+	Learning []string
 }
 
 func main() {
 	me := Developer{
-		Name:     "YangYuS8",
-		Role:     "Builder / Developer / Linux User",
-		Location: "Earth",
-		Focus:    []string{"Rust", "Kubernetes", "System Design"},
+		Name: "YangYuS8",
+		Focus: []string{
+			"Linux desktop workflows",
+			"DevOps and cloud-native practice",
+			"open-source tools for real daily problems",
+		},
+		Building: []string{
+			"LWE: Wallpaper Engine content on Linux",
+			"homelab and Kubernetes experiments",
+			"small AI-assisted developer tools",
+		},
+		Learning: []string{
+			"Rust", "Go", "Kubernetes", "observability", "system design",
+		},
 	}
 
 	_ = me
@@ -24,77 +34,88 @@ func main() {
 
 你好，我是杨与S8。
 
-这里不是一份标准化的简历页，更像是一块长期维护的个人工作台。我会在这里记录写代码时踩过的坑、做过的小项目、折腾过的工具链，以及一些还没完全成形、但已经值得留下痕迹的想法。
+这个页面用来简单介绍我现在在做什么。平时我主要记录 Linux、开发环境、开源项目、部署排查、AI Agent 工作流，以及一些能复现、能验证的实践笔记。
 
-我偏爱那种能真正解决问题的东西：能跑起来，能被反复使用，最好还能在下一次重构时比上一次更干净一点。比起堆概念，我更喜欢把一个想法尽快做成可以验证的原型，再慢慢把它打磨到足够顺手。
+我更喜欢从具体问题开始学习。一个工具、一个服务、一个项目，只有经历过安装、配置、报错、修复和复盘，才算真正进入自己的工具箱。
 
-## About Me
+## 我在做什么
 
-- 主要在做全栈方向的小项目和个人工具
-- 长期关注开发体验、自动化、内容组织和可维护性
-- 喜欢把想法先做成可运行的东西，再决定它值不值得继续扩展
-- 对 Linux 始终有稳定兴趣，平时也乐于折腾系统和环境本身
+- 日常维护 Arch / CachyOS 工作站、dotfiles 和开发环境。
+- 维护 LWE，一个用于在 Linux 上浏览、管理和应用 Wallpaper Engine 内容的桌面工具。
+- 通过本地实验、项目和博客记录补 Kubernetes、DevOps、可观测性相关基础。
+- 根据问题在 Rust、Go、TypeScript、Python、PHP、Shell 之间切换。
+- 使用 AI Agents 辅助读代码、拆任务、查日志和写文档，并用本地运行、测试和部署结果复核。
 
-## Tech Stack
+## 我比较关心的东西
 
 ```yaml
-Frontend:
-  - Vue.js
-  - React
-  - Next.js
-  - TypeScript / JavaScript / HTML / CSS
+Languages:
+  - Rust, Go, TypeScript, Python, PHP, Shell
 
-Backend:
-  - Node.js
-  - Go
-  - Python
-  - Rust
+Frontend & Desktop:
+  - Svelte, Vue, React
+  - Tauri, Electron
 
-DevOps:
-  - Docker
-  - Kubernetes
-  - CI/CD
+Backend & DevOps:
+  - Linux, Git, CI/CD
+  - Docker / Podman, Kubernetes
+  - Grafana, Loki, Alloy
 
-System:
-  - Arch Linux
-  - EndeavourOS
-  - Ubuntu
-  - Linux in general
+Systems I care about:
+  - Arch / CachyOS workstation workflows
+  - PVE / self-hosted services
+  - dotfiles and terminal tooling
+  - Hermes / OpenClaw / skills workflows
 ```
 
 ## 一些项目
 
-### WayVid
+### LWE
 
-一个围绕视频处理与工作流展开的项目。对我来说，它的重点不只是“能用”，而是把流程梳理清楚，把重复劳动尽量收掉，让工具本身成为工作流的一部分。
+LWE 是我现在投入比较多的开源项目。它是一个 Linux 桌面应用，用来浏览、管理和应用 Wallpaper Engine 内容。
 
-::github{repo="YangYuS8/wayvid"}
+这个项目覆盖了应用功能、Linux 桌面兼容性、AUR 打包、GitHub Releases、在线文档和用户反馈。每一块都能遇到真实问题，也都需要长期维护。
 
-### YoloPest
+::github{repo="YangYuS8/lwe"}
 
-一个更偏向识别与应用落地的小项目。它吸引我的地方在于，这类东西既有模型和数据的一面，也有实际使用场景的一面，既要跑得起来，也要落得下去。
+### k8s-lab / Kube-Sentinel
 
-::github{repo="YangYuS8/yolopest"}
+我也在持续补 Kubernetes 和云原生相关内容。`k8s-lab` 主要用来放实验和笔记，`Kube-Sentinel` 用来理解 Controller、CRD、Alertmanager Webhook、Prometheus 等概念。
 
-## Current Focus
+这部分仍然是学习和练习，不会包装成熟项目。
 
-- 更系统地学习 Rust，补足底层和系统编程方面的理解
-- 持续摸索 Kubernetes 与 cloud-native 相关内容
-- 继续建立自己对 system design 的判断，而不只是记概念
-- 保持做项目、写记录、修细节这套长期节奏
+::github{repo="YangYuS8/k8s-lab"}
+
+### blog / dotfiles
+
+这个博客和 dotfiles 也算长期维护项目。
+
+博客用来记录问题、排查过程和复盘；dotfiles 用来维护工作站配置，减少重装或迁移环境时的重复工作。它们不显眼，但很实用。
+
+::github{repo="YangYuS8/blog"}
+
+::github{repo="YangYuS8/dotfiles"}
+
+## AI Agent 工作流
+
+最近我也在持续使用和维护 AI Agent 工具链，包括 Hermes、OpenClaw、OpenCode、skills、项目规则和本地/远程 agent 协作。
+
+这类工具的价值在于把重复的命令、排查步骤、项目约定和经验教训沉淀下来。用得好时，它可以减少重复劳动；用不好时，也会制造新的排查问题。所以我更关注可复核的流程，而不是只看生成结果。
+
+AI 输出不能直接当作最终结论。代码、日志、测试、构建和部署结果才是最后的判断依据。
 
 ## Linux, btw
 
-如果一定要说一种长期稳定的偏好，那大概就是 Linux。
+如果要说一个长期偏好，那就是 Linux。
 
-我很喜欢那种可以自己掌控环境、自己理解系统、自己决定工具链组合的感觉。很多时候，我折腾的不是“装一个能跑的系统”，而是把开发环境本身也当作项目的一部分去维护。
+我喜欢掌控自己的环境，理解系统行为，按自己的习惯组合工具链。很多时候，维护开发环境本身也像维护一个项目。
 
-所以这里的很多内容，除了代码，也会自然延伸到命令行、系统配置、工作流和工程细节。
+所以这里的很多文章会自然延伸到命令行、包管理、systemd、代理、网络、部署和故障排查。
 
 ## 关于这个博客
 
-这个站点本身也是我的项目之一。
+这个站点使用 Astro + Fuwari 构建。
 
-它既用来整理技术内容，也用来保留一些阶段性的思考。很多页面、脚本和细节调整，最开始都只是为了满足我自己的使用习惯，后来才慢慢长成现在的样子。
+这里的文章主要来自真实问题：某个包装不上、某个服务起不来、某个 DNS 行为很怪、某个 agent 工具链突然坏掉。写下来，是为了让问题以后可以被搜索、复现和修正。
 
-如果你在这里看到一篇文章、一段代码，或者一个看起来有点过度设计的细节，那大概率都是我认真折腾过之后留下来的结果。
+如果这些记录能让未来的我少踩一次坑，或者让遇到类似问题的人更快定位方向，那就够了。
