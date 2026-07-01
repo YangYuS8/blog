@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-06-28 · [Dockge Compose 管理体系](https://blog.yangyus8.top/posts/dockge-compose-management-workflow/)- 2026-06-28 · [媒体基础设施路径规划](https://blog.yangyus8.top/posts/homelab-media-storage-download-layout/)- 2026-06-28 · [媒体自动化服务迁移](https://blog.yangyus8.top/posts/homelab-media-automation-migration/)- 2026-06-28 · [容器更新策略与 Watchtower 取舍](https://blog.yangyus8.top/posts/homelab-container-update-policy-watchtower/)- 2026-06-26 · [OpenWrt 旁路代理网关部署](https://blog.yangyus8.top/posts/openwrt-sidecar-proxy-gateway/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-06-30 · [运维工程师一面复盘：上线流程、Docker 与 Linux 基础](https://blog.yangyus8.top/posts/ops-interview-review-linux-docker-release/)- 2026-06-28 · [Dockge Compose 管理体系](https://blog.yangyus8.top/posts/dockge-compose-management-workflow/)- 2026-06-28 · [媒体基础设施路径规划](https://blog.yangyus8.top/posts/homelab-media-storage-download-layout/)- 2026-06-28 · [媒体自动化服务迁移](https://blog.yangyus8.top/posts/homelab-media-automation-migration/)- 2026-06-28 · [容器更新策略与 Watchtower 取舍](https://blog.yangyus8.top/posts/homelab-container-update-policy-watchtower/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
