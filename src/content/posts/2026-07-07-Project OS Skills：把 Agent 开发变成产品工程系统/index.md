@@ -21,7 +21,7 @@ lang: 'zh_CN'
 
 所以我把这套思路提炼成了一个开源 skills 包：
 
-[YangYuS8/project-os-skills](https://github.com/YangYuS8/project-os-skills)
+::github{repo="YangYuS8/project-os-skills"}
 
 它不是某个项目的代码模板，也不是一组空泛的提示词，而是一套给 AI Agents 使用的工程方法包。目标很直接：让 Agent 不只是生成代码，而是像一个小型产品工程团队一样工作。
 
