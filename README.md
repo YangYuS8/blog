@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-07-24 · [1Panel OpenResty 接管系统 Nginx 80 端口](https://blog.yangyus8.top/posts/1panel-openresty-take-over-nginx-port-80/)- 2026-07-08 · [Noctalia v5 迁移与 dotfiles 管理](https://blog.yangyus8.top/posts/noctalia-v5-dotfiles-stow-migration/)- 2026-07-07 · [Project OS Skills：把 Agent 开发变成产品工程系统](https://blog.yangyus8.top/posts/project-os-skills-product-engineering-os/)- 2026-06-30 · [运维工程师一面复盘：上线流程、Docker 与 Linux 基础](https://blog.yangyus8.top/posts/ops-interview-review-linux-docker-release/)- 2026-06-28 · [Dockge Compose 管理体系](https://blog.yangyus8.top/posts/dockge-compose-management-workflow/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-07-27 · [WireGuard 访问家庭局域网的回程路由排查](https://blog.yangyus8.top/posts/wireguard-home-lan-return-route-snat/)- 2026-07-26 · [WireGuard 中继节点转发排查](https://blog.yangyus8.top/posts/wireguard-relay-peer-forwarding-fix/)- 2026-07-24 · [1Panel OpenResty 接管系统 Nginx 80 端口](https://blog.yangyus8.top/posts/1panel-openresty-take-over-nginx-port-80/)- 2026-07-08 · [Noctalia v5 迁移与 dotfiles 管理](https://blog.yangyus8.top/posts/noctalia-v5-dotfiles-stow-migration/)- 2026-07-07 · [Project OS Skills：把 Agent 开发变成产品工程系统](https://blog.yangyus8.top/posts/project-os-skills-product-engineering-os/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
