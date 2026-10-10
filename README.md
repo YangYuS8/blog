@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-08-06 · [CachyOS 启动卡死：定位并止损 systemd 重启风暴](https://blog.yangyus8.top/posts/cachyos-boot-freeze-systemd-restart-storm/)- 2026-07-27 · [WireGuard 访问家庭局域网的回程路由排查](https://blog.yangyus8.top/posts/wireguard-home-lan-return-route-snat/)- 2026-07-26 · [WireGuard 中继节点转发排查](https://blog.yangyus8.top/posts/wireguard-relay-peer-forwarding-fix/)- 2026-07-24 · [1Panel OpenResty 接管系统 Nginx 80 端口](https://blog.yangyus8.top/posts/1panel-openresty-take-over-nginx-port-80/)- 2026-07-08 · [Noctalia v5 迁移与 dotfiles 管理](https://blog.yangyus8.top/posts/noctalia-v5-dotfiles-stow-migration/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-10-09 · [任务队列容量压测与验收边界](https://blog.yangyus8.top/posts/task-queue-load-test-acceptance/)- 2026-10-08 · [LWE AppImage 图标断链与 ABI 验收](https://blog.yangyus8.top/posts/lwe-appimage-icon-linux-abi-validation/)- 2026-10-08 · [PostgreSQL 与 FFmpeg 测试提速](https://blog.yangyus8.top/posts/postgresql-ffmpeg-test-runtime/)- 2026-10-08 · [无 Git 历史服务的源码基线恢复](https://blog.yangyus8.top/posts/source-baseline-recovery-without-git/)- 2026-10-08 · [报表字段扩展中的 NULL 与零值](https://blog.yangyus8.top/posts/report-fields-null-zero-semantics/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
