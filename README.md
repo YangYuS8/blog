@@ -155,7 +155,7 @@ lang: 'zh_CN'
 
 这个区块会通过 [gautamkrishnar/blog-post-workflow](https://github.com/gautamkrishnar/blog-post-workflow) 从站点 RSS 自动更新。
 
-<!-- BLOG-POST-LIST:START -->- 2026-10-09 · [任务队列容量压测与验收边界](https://blog.yangyus8.top/posts/task-queue-load-test-acceptance/)- 2026-10-08 · [LWE AppImage 图标断链与 ABI 验收](https://blog.yangyus8.top/posts/lwe-appimage-icon-linux-abi-validation/)- 2026-10-08 · [PostgreSQL 与 FFmpeg 测试提速](https://blog.yangyus8.top/posts/postgresql-ffmpeg-test-runtime/)- 2026-10-08 · [无 Git 历史服务的源码基线恢复](https://blog.yangyus8.top/posts/source-baseline-recovery-without-git/)- 2026-10-08 · [报表字段扩展中的 NULL 与零值](https://blog.yangyus8.top/posts/report-fields-null-zero-semantics/)<!-- BLOG-POST-LIST:END -->
+<!-- BLOG-POST-LIST:START -->- 2026-10-15 · [LWE 帧流水线性能排查](https://blog.yangyus8.top/posts/lwe-frame-pipeline-performance/)- 2026-10-14 · [WireGuard 重叠网段与精确访问控制](https://blog.yangyus8.top/posts/wireguard-overlapping-lan-access-control/)- 2026-10-13 · [LWE Scene 纹理共享与失败回滚](https://blog.yangyus8.top/posts/lwe-scene-texture-budget-rollback/)- 2026-10-13 · [LWE 长运行验收的完成状态与通过条件](https://blog.yangyus8.top/posts/lwe-reliability-completion-vs-pass/)- 2026-10-13 · [Pi 代理配置与请求路径验证](https://blog.yangyus8.top/posts/pi-http-proxy-request-verification/)<!-- BLOG-POST-LIST:END -->
 
 ---
 
